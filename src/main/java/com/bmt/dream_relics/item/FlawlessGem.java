@@ -89,7 +89,6 @@ public class FlawlessGem extends DreamRelicItemBase {
                 return true;
             }
         }
-
         return false;
     }
 
