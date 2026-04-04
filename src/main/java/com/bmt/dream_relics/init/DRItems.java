@@ -58,4 +58,8 @@ public class DRItems {
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> FLAWLESS_GEM = ITEMS.register("flawless_gem",
             () -> new FlawlessGem(new Item.Properties()));
+    public static final RegistryObject<Item> ROYAL_LENS = ITEMS.register("royal_lens",
+            () -> new RoyalLens(new Item.Properties()));
+    public static final RegistryObject<Item> ROYAL_CROWN = ITEMS.register("royal_crown",
+            () -> new RoyalCrown(new Item.Properties()));
 }

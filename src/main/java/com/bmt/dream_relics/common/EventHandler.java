@@ -20,6 +20,7 @@ import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
@@ -102,6 +103,32 @@ public class EventHandler {
                         }
                     }
                 });
+            }
+
+            LivingEntity target = event.getEntity();
+
+            if (target instanceof net.minecraft.world.entity.TamableAnimal tamable) {
+                LivingEntity owner = tamable.getOwner();
+                if (owner instanceof Player player) {
+                    CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
+                        if (iCuriosItemHandler.isEquipped(DRItems.ROYAL_CROWN.get())) {
+                            float reducedDamage = event.getAmount() * 0.6f;
+                            event.setAmount(reducedDamage);
+                        }
+                    });
+                }
+            }
+
+            if (event.getSource().getEntity() instanceof net.minecraft.world.entity.TamableAnimal tamableAttacker) {
+                LivingEntity owner = tamableAttacker.getOwner();
+                if (owner instanceof Player player) {
+                    CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
+                        if (iCuriosItemHandler.isEquipped(DRItems.ROYAL_CROWN.get())) {
+                            float boostedDamage = event.getAmount() * 1.2f;
+                            event.setAmount(boostedDamage);
+                        }
+                    });
+                }
             }
         }
 
@@ -230,6 +257,25 @@ public class EventHandler {
                     }
                 }
             }
+        }
+
+        @SubscribeEvent
+        public static void onCriticalHit(CriticalHitEvent event) {
+            Player player = event.getEntity();
+
+            CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
+                if (iCuriosItemHandler.isEquipped(DRItems.ROYAL_LENS.get())) {
+                    float currentModifier = event.getDamageModifier();
+
+                    if (Math.abs(currentModifier - 1.5F) < 0.01F) {
+                        event.setDamageModifier(2.0F);
+                    }
+                    else if (currentModifier > 1.0F) {
+                        float relativeMultiplier = currentModifier / 1.5F;
+                        event.setDamageModifier(relativeMultiplier * 2.0F);
+                    }
+                }
+            });
         }
 
         @SubscribeEvent

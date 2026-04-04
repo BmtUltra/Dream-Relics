@@ -34,5 +34,9 @@
   "item.dream_relics.dark_whisper_ring": "暗黑低语戒指",
   "item.dream_relics.dark_whisper_dagger": "暗黑低语匕首",
   "item.dream_relics.flawless_gem": "无暇宝石",
-  "item.dream_relics.tooltip.item.flawless_gem.restore": "§7在铁砧可以修复物品耐久并清除物品的所有负面附魔"
+  "item.dream_relics.tooltip.item.flawless_gem.restore": "§7在铁砧可以修复物品耐久并清除物品的所有负面附魔",
+  "item.dream_relics.royal_lens": "王室镜片",
+  "item.dream_relics.tooltip.item.royal_lens.restore": "§7通过跳跃造成的伤害提升",
+  "item.dream_relics.royal_crown": "王室之冠",
+  "item.dream_relics.tooltip.item.royal_crown.essence": "§7驯服的生物受到的伤害降低，造成的伤害提升"
 }

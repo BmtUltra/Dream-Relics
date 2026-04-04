@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "dream_relics:royal_lens",
+      "required": false
+    },
+    {
+      "id": "dream_relics:royal_crown",
+      "required": false
+    }
+  ]
+}
