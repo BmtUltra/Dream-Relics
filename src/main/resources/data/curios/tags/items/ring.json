@@ -4,6 +4,10 @@
     {
       "id": "dream_relics:tassel_ring",
       "required": false
+    },
+    {
+      "id": "dream_relics:mist_veil_ring",
+      "required": false
     }
   ]
 }

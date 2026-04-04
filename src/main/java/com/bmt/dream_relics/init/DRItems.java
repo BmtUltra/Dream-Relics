@@ -47,7 +47,7 @@ public class DRItems {
     public static final RegistryObject<Item> AWAKEN_DREAM_BRACELET = ITEMS.register("awaken_dream_bracelet",
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> MIST_VEIL_RING = ITEMS.register("mist_veil_ring",
-            () -> new Item(new Item.Properties()));
+            () -> new DreamRelicItem(new Item.Properties()));
     public static final RegistryObject<Item> NIGHTMARE_BOOK = ITEMS.register("nightmare_book",
             () -> new NightmareBook(new Item.Properties()));
     public static final RegistryObject<Item> VOID_NECKLACE = ITEMS.register("void_necklace",
