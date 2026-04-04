@@ -41,8 +41,11 @@ public class DRCreativeTabs {
                         output.accept(DRItems.VOID_NECKLACE.get());
                         output.accept(DRItems.DARK_WHISPER_RING.get());
                         output.accept(DRItems.DARK_WHISPER_DAGGER.get());
+                        output.accept(DRItems.ICARUS_WINGS.get());
                         output.accept(DRItems.ROYAL_CROWN.get());
                         output.accept(DRItems.ROYAL_LENS.get());
+                        output.accept(DRItems.PURE_HOLY_GRAIL.get());
+                        output.accept(DRItems.OCEAN_CURRENT_BLESSING.get());
                         output.accept(DRItems.FLAWLESS_GEM.get());
                     }).build());
 }

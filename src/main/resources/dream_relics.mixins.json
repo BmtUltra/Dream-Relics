@@ -12,6 +12,7 @@
     "minecraft.FoodDataMixin",
     "minecraft.InventoryMixin",
     "minecraft.IronGolemMixin",
+    "minecraft.LivingEntityMixin",
     "minecraft.MistVeilRingMixin",
     "minecraft.PlayerMixin",
     "minecraft.ServerPlayerGameModeMixin",
@@ -21,6 +22,7 @@
   ],
   "minVersion": "0.8",
   "client": [
+    "minecraft.IcarusWingsMixin"
   ],
   "mixinextras": {
     "minVersion": "0.5.0"

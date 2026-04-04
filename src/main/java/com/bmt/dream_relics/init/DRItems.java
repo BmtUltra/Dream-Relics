@@ -62,4 +62,10 @@ public class DRItems {
             () -> new RoyalLens(new Item.Properties()));
     public static final RegistryObject<Item> ROYAL_CROWN = ITEMS.register("royal_crown",
             () -> new RoyalCrown(new Item.Properties()));
+    public static final RegistryObject<Item> OCEAN_CURRENT_BLESSING = ITEMS.register("ocean_current_blessing",
+            () -> new DreamRelicItem(new Item.Properties()));
+    public static final RegistryObject<Item> ICARUS_WINGS = ITEMS.register("icarus_wings",
+            () -> new DreamRelicItem(new Item.Properties()));
+    public static final RegistryObject<Item> PURE_HOLY_GRAIL = ITEMS.register("pure_holy_grail",
+            () -> new DreamRelicItem(new Item.Properties()));
 }

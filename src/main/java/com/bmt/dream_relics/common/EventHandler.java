@@ -10,6 +10,7 @@ import com.bmt.dream_relics.init.DRCapabilities;
 import com.bmt.dream_relics.init.DRItems;
 import com.bmt.dream_relics.util.DRUtil;
 import com.bmt.dream_relics.util.SleepStateManager;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -290,8 +291,45 @@ public class EventHandler {
         public static void AttachPlayerCapabilitiesEvent(AttachCapabilitiesEvent<Player> event) {
             event.addCapability(DreamRelics.id("player_data"), new PlayerData());
         }
-    }
 
+        @SubscribeEvent
+        public static void onLivingBreathe(LivingEvent.LivingTickEvent event) {
+            if (event.getEntity() instanceof Player player) {
+                CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
+                    if (iCuriosItemHandler.isEquipped(DRItems.OCEAN_CURRENT_BLESSING.get())) {
+                        if (player.isEyeInFluid(FluidTags.WATER)) {
+                            player.setAirSupply(player.getMaxAirSupply());
+                        }
+                    }
+                });
+            }
+        }
+
+        @SubscribeEvent
+        public static void onPlayerXpChange(PlayerXpEvent.XpChange event) {
+            Player player = event.getEntity();
+
+            CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
+                if (iCuriosItemHandler.isEquipped(DRItems.PURE_HOLY_GRAIL.get())) {
+                    int originalXp = event.getAmount();
+                    int increasedXp = (int) (originalXp * 1.5F);
+                    event.setAmount(increasedXp);
+                }
+            });
+        }
+
+        @SubscribeEvent
+        public static void onExperienceOrbPickup(PlayerXpEvent.PickupXp event) {
+            Player player = event.getEntity();
+
+            CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
+                if (iCuriosItemHandler.isEquipped(DRItems.PURE_HOLY_GRAIL.get())) {
+                    int originalValue = event.getOrb().getValue();
+                    event.getOrb().value = (int) (originalValue * 1.5F);
+                }
+            });
+        }
+    }
 
     @Mod.EventBusSubscriber(modid = DreamRelics.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class ModEventHandler {
