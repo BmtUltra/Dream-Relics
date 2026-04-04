@@ -8,6 +8,10 @@
     {
       "id": "dream_relics:pure_holy_grail",
       "required": false
+    },
+    {
+      "id": "dream_relics:elven_boots",
+      "required": false
     }
   ]
 }

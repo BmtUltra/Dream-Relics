@@ -68,4 +68,8 @@ public class DRItems {
             () -> new DreamRelicItem(new Item.Properties()));
     public static final RegistryObject<Item> PURE_HOLY_GRAIL = ITEMS.register("pure_holy_grail",
             () -> new DreamRelicItem(new Item.Properties()));
+    public static final RegistryObject<Item> ELVEN_BOOTS = ITEMS.register("elven_boots",
+            () -> new DreamRelicItem(new Item.Properties()));
+    public static final RegistryObject<Item> RARE_GOLD_BRACELET = ITEMS.register("rare_gold_bracelet",
+            () -> new DreamRelicItem(new Item.Properties()));
 }
