@@ -56,4 +56,6 @@ public class DRItems {
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> DARK_WHISPER_DAGGER = ITEMS.register("dark_whisper_dagger",
             () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> FLAWLESS_GEM = ITEMS.register("flawless_gem",
+            () -> new FlawlessGem(new Item.Properties()));
 }

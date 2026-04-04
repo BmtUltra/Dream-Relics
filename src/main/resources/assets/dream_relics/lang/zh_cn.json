@@ -32,5 +32,7 @@
   "item.dream_relics.tooltip.item.nightmare_book.effect3": "§7铁砧使用成本翻倍",
   "item.dream_relics.void_necklace": "虚空项链",
   "item.dream_relics.dark_whisper_ring": "暗黑低语戒指",
-  "item.dream_relics.dark_whisper_dagger": "暗黑低语匕首"
+  "item.dream_relics.dark_whisper_dagger": "暗黑低语匕首",
+  "item.dream_relics.flawless_gem": "无暇宝石",
+  "item.dream_relics.tooltip.item.flawless_gem.restore": "§7在铁砧可以修复物品耐久并清除物品的所有负面附魔"
 }

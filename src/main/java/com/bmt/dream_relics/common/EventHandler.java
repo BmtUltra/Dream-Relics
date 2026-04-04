@@ -4,6 +4,7 @@ import com.bmt.dream_relics.DreamRelics;
 import com.bmt.dream_relics.common.capabilities.PlayerData;
 import com.bmt.dream_relics.common.capabilities.YearsAmberItemHandler;
 import com.bmt.dream_relics.item.DreamTotem;
+import com.bmt.dream_relics.item.FlawlessGem;
 import com.bmt.dream_relics.item.YearsAmber;
 import com.bmt.dream_relics.init.DRCapabilities;
 import com.bmt.dream_relics.init.DRItems;
@@ -183,8 +184,36 @@ public class EventHandler {
 
         @SubscribeEvent
         public static void AnvilUpdateEvent(AnvilUpdateEvent event) {
-            if (DRUtil.isEquippedNightmareBook(event.getPlayer())) {
+            Player player = event.getPlayer();
+
+            if (DRUtil.isEquippedNightmareBook(player)) {
                 event.setCost(event.getCost() * 2);
+            }
+
+            ItemStack leftItem = event.getLeft();
+            ItemStack rightItem = event.getRight();
+
+            if (!rightItem.isEmpty() && rightItem.getItem() == DRItems.FLAWLESS_GEM.get()) {
+                if (!leftItem.isEmpty() && leftItem.isDamageableItem()) {
+                    ItemStack result = leftItem.copy();
+                    boolean modified = false;
+
+                    if (FlawlessGem.hasNegativeEnchantments(result)) {
+                        result = FlawlessGem.removeNegativeEnchantments(result);
+                        modified = true;
+                    }
+
+                    if (FlawlessGem.needsRepair(result)) {
+                        result = FlawlessGem.repairItem(result);
+                        modified = true;
+                    }
+
+                    if (modified) {
+                        event.setOutput(result);
+                        event.setCost(10);
+                        event.setMaterialCost(1);
+                    }
+                }
             }
         }
 
