@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "dream_relics:years_amber",
+      "required": false
+    },
+    {
+      "id": "dream_relics:nightmare_book",
+      "required": false
+    },
+    {
+      "id": "dream_relics:endless_dream",
+      "required": false
+    },
+    {
+      "id": "dream_relics:dream_totem",
+      "required": false
+    }
+  ]
+}

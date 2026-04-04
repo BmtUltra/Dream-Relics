@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "dream_relics:heart_voice_pendant",
+      "required": false
+    },
+    {
+      "id": "dream_relics:void_necklace",
+      "required": false
+    }
+  ]
+}
