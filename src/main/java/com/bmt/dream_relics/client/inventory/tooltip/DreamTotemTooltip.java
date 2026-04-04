@@ -1,4 +1,4 @@
-package com.bmt.dream_relics.client;
+package com.bmt.dream_relics.client.inventory.tooltip;
 
 import com.bmt.dream_relics.DreamRelics;
 import com.bmt.dream_relics.item.DreamTotem;
@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = DreamRelics.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class DreamTotemTooltipEvent {
+public class DreamTotemTooltip {
 
     @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
