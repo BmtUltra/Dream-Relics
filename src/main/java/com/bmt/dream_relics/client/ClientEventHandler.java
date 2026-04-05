@@ -1,6 +1,7 @@
 package com.bmt.dream_relics.client;
 
 import com.bmt.dream_relics.DreamRelics;
+import com.bmt.dream_relics.client.inventory.tooltip.MemoryStardustTooltip;
 import com.bmt.dream_relics.client.inventory.tooltip.YearsAmberTooltip;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraftforge.api.distmarker.Dist;
@@ -16,6 +17,7 @@ public class ClientEventHandler {
         @SubscribeEvent
         public static void RegisterClientTooltipComponentFactoriesEvent(RegisterClientTooltipComponentFactoriesEvent event) {
             event.register(YearsAmberTooltip.Component.class, YearsAmberTooltip::new);
+            event.register(MemoryStardustTooltip.Component.class, MemoryStardustTooltip::new);
         }
     }
 

@@ -20,6 +20,10 @@
     {
       "id": "dream_relics:time_hourglass",
       "required": false
+    },
+    {
+      "id": "dream_relics:memory_stardust",
+      "required": false
     }
   ]
 }

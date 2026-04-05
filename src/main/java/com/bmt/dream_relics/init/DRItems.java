@@ -22,7 +22,7 @@ public class DRItems {
     public static final RegistryObject<Item> YEARS_AMBER = ITEMS.register("years_amber",
             () -> new YearsAmber(new Item.Properties()));
     public static final RegistryObject<Item> MEMORY_STARDUST = ITEMS.register("memory_stardust",
-            () -> new Item(new Item.Properties()));
+            () -> new MemoryStardustItem(new Item.Properties()));
     public static final RegistryObject<Item> TIME_HOURGLASS = ITEMS.register("time_hourglass",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.time_hourglass"));
     public static final RegistryObject<Item> ASTRAL_NECKLACE = ITEMS.register("astral_necklace",
