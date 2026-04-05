@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Mod.EventBusSubscriber(modid = DreamRelics.MODID)
-public class SoulMirrorItem extends DreamRelicItemBase {
+public class SoulMirrorItem extends DreamRelicItem {
 
     public SoulMirrorItem(Properties properties) {
-        super(properties.stacksTo(1).rarity(Rarity.COMMON));
+        super(properties.stacksTo(1));
     }
 
     @Override
@@ -45,8 +45,7 @@ public class SoulMirrorItem extends DreamRelicItemBase {
                 }
             }
         }
-
-        super.appendHoverText(itemStack, level, list, tooltipFlag);
+        list.add(Component.translatable("tooltip.dream_relics.soul_mirror").withStyle(ChatFormatting.GRAY));
     }
 
     @Override
@@ -90,36 +89,72 @@ public class SoulMirrorItem extends DreamRelicItemBase {
     public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, Level level, @NotNull LivingEntity entity) {
         if (!level.isClientSide && entity instanceof ServerPlayer player) {
             if (!player.getCooldowns().isOnCooldown(stack.getItem())) {
-                Optional<GlobalPos> deathLocation = player.getLastDeathLocation();
-                if (deathLocation.isPresent()) {
-                    GlobalPos globalPos = deathLocation.get();
-                    ServerLevel targetLevel = player.server.getLevel(globalPos.dimension());
-
-                    if (targetLevel != null) {
-                        BlockPos pos = globalPos.pos();
-                        player.teleportTo(targetLevel,
-                                pos.getX() + 0.5,
-                                pos.getY(),
-                                pos.getZ() + 0.5,
-                                player.getYRot(),
-                                player.getXRot());
-
-                        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
-                                SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-                        player.getCooldowns().addCooldown(this, MainConfig.cooldownTime);
-                    } else {
-                        player.displayClientMessage(
-                                Component.translatable("death.dream_relics.dimension_not_found")
-                                        .withStyle(ChatFormatting.RED), true);
-                    }
+                if (player.isShiftKeyDown()) {
+                    teleportToRespawnPoint(player);
                 } else {
-                    player.displayClientMessage(
-                            Component.translatable("death.dream_relics.no_death_point")
-                                    .withStyle(ChatFormatting.RED), true);
+                    teleportToDeathPoint(player);
                 }
+                player.getCooldowns().addCooldown(this, MainConfig.cooldownTime);
             }
         }
         return stack;
+    }
+
+    private void teleportToDeathPoint(ServerPlayer player) {
+        Optional<GlobalPos> deathLocation = player.getLastDeathLocation();
+        if (deathLocation.isPresent()) {
+            GlobalPos globalPos = deathLocation.get();
+            ServerLevel targetLevel = player.server.getLevel(globalPos.dimension());
+
+            if (targetLevel != null) {
+                BlockPos pos = globalPos.pos();
+                player.teleportTo(targetLevel,
+                        pos.getX() + 0.5,
+                        pos.getY(),
+                        pos.getZ() + 0.5,
+                        player.getYRot(),
+                        player.getXRot());
+
+                player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
+            }
+        } else {
+            player.displayClientMessage(
+                    Component.translatable("death.dream_relics.no_death_point")
+                            .withStyle(ChatFormatting.RED), true);
+        }
+    }
+
+    private void teleportToRespawnPoint(ServerPlayer player) {
+        ServerLevel respawnLevel = player.server.getLevel(player.getRespawnDimension());
+        BlockPos respawnPos = player.getRespawnPosition();
+
+        if (respawnLevel != null && respawnPos != null) {
+            float respawnAngle = player.getRespawnAngle();
+
+            player.teleportTo(respawnLevel,
+                    respawnPos.getX() + 0.5,
+                    respawnPos.getY(),
+                    respawnPos.getZ() + 0.5,
+                    respawnAngle,
+                    player.getXRot());
+
+            player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                    SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
+        } else {
+            ServerLevel overworld = player.server.overworld();
+            BlockPos worldSpawn = overworld.getSharedSpawnPos();
+
+            player.teleportTo(overworld,
+                    worldSpawn.getX() + 0.5,
+                    worldSpawn.getY(),
+                    worldSpawn.getZ() + 0.5,
+                    player.getYRot(),
+                    player.getXRot());
+
+            player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                    SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
+        }
     }
 
     @Override
