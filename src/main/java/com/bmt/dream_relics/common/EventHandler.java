@@ -332,33 +332,6 @@ public class EventHandler {
                 }
             });
         }
-
-        @SubscribeEvent
-        public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-            if (event.phase == TickEvent.Phase.END) {
-                Player player = event.player;
-
-                CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
-                    if (iCuriosItemHandler.isEquipped(DRItems.ELVEN_BOOTS.get())) {
-                        if (player.horizontalCollision) {
-                            player.fallDistance = 0.0F;
-
-                            final float velocity = 0.15F;
-                            Vec3 motion = player.getDeltaMovement();
-
-                            double motionX = Mth.clamp(motion.x, -velocity, velocity);
-                            double motionY = 0.2;
-                            double motionZ = Mth.clamp(motion.z, -velocity, velocity);
-
-                            if (player.isShiftKeyDown()) {
-                                motionY = 0.0;
-                            }
-                            player.setDeltaMovement(motionX, motionY, motionZ);
-                        }
-                    }
-                });
-            }
-        }
     }
 
     @Mod.EventBusSubscriber(modid = DreamRelics.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)

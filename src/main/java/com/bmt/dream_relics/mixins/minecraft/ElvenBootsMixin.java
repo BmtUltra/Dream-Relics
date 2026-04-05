@@ -19,7 +19,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 @Mixin(LocalPlayer.class)
-public abstract class IcarusWingsMixin extends AbstractClientPlayer {
+public abstract class ElvenBootsMixin extends AbstractClientPlayer {
 
     @Unique
     private int dreamRelics$jumpCount = 0;
@@ -30,7 +30,7 @@ public abstract class IcarusWingsMixin extends AbstractClientPlayer {
     @Unique
     private boolean dreamRelics$hasIcarusWings = false;
 
-    public IcarusWingsMixin(ClientLevel clientLevel, GameProfile gameProfile) {
+    public ElvenBootsMixin(ClientLevel clientLevel, GameProfile gameProfile) {
         super(clientLevel, gameProfile);
     }
 
@@ -41,7 +41,7 @@ public abstract class IcarusWingsMixin extends AbstractClientPlayer {
         LazyOptional<ICuriosItemHandler> optional = CuriosApi.getCuriosInventory(player);
         if (optional.isPresent()) {
             ICuriosItemHandler handler = optional.orElseThrow(NullPointerException::new);
-            dreamRelics$hasIcarusWings = handler.isEquipped(DRItems.ICARUS_WINGS.get());
+            dreamRelics$hasIcarusWings = handler.isEquipped(DRItems.ELVEN_BOOTS.get());
         } else {
             dreamRelics$hasIcarusWings = false;
         }

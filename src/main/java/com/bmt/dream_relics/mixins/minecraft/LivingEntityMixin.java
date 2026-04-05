@@ -4,6 +4,7 @@ import com.bmt.dream_relics.init.DRItems;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -15,7 +16,7 @@ import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
-    
+
     @Unique
     private boolean dreamRelics$hasIcarusWings(LivingEntity entity) {
         if (entity instanceof net.minecraft.world.entity.player.Player player) {
@@ -28,11 +29,23 @@ public abstract class LivingEntityMixin {
         return false;
     }
 
+    @Unique
+    private boolean dreamRelics$hasElvenBoots(LivingEntity entity) {
+        if (entity instanceof net.minecraft.world.entity.player.Player player) {
+            LazyOptional<ICuriosItemHandler> optional = CuriosApi.getCuriosInventory(player);
+            if (optional.isPresent()) {
+                ICuriosItemHandler handler = optional.orElseThrow(NullPointerException::new);
+                return handler.isEquipped(DRItems.ELVEN_BOOTS.get());
+            }
+        }
+        return false;
+    }
+
     @Inject(method = "calculateFallDamage", at = @At("RETURN"), cancellable = true)
     public void dreamRelics$modifyFallDamage(float fallDistance, float damageMultiplier, CallbackInfoReturnable<Integer> cir) {
         LivingEntity entity = (LivingEntity) (Object) this;
-        
-        if (dreamRelics$hasIcarusWings(entity) && !entity.hasEffect(MobEffects.JUMP)) {
+
+        if (dreamRelics$hasElvenBoots(entity) && !entity.hasEffect(MobEffects.JUMP)) {
             int originalDamage = cir.getReturnValue();
             int reducedDamage = Math.max(0, originalDamage - 1);
             cir.setReturnValue(reducedDamage);
@@ -42,8 +55,8 @@ public abstract class LivingEntityMixin {
     @Inject(method = "getJumpBoostPower", at = @At(value = "HEAD"), cancellable = true)
     private void dreamRelics$improvedJumpBoost(CallbackInfoReturnable<Float> cir) {
         LivingEntity entity = (LivingEntity) (Object) this;
-        
-        if (dreamRelics$hasIcarusWings(entity)) {
+
+        if (dreamRelics$hasElvenBoots(entity)) {
             float jumpBoost = 0.1F;
 
             MobEffectInstance jumpEffect = entity.getEffect(MobEffects.JUMP);
@@ -51,6 +64,28 @@ public abstract class LivingEntityMixin {
                 jumpBoost += 0.1F * (float)(jumpEffect.getAmplifier() + 1);
             }
             cir.setReturnValue(jumpBoost);
+        }
+    }
+
+    @Inject(method = "getBlockSpeedFactor", at = @At("HEAD"), cancellable = true)
+    private void dreamRelics$onGetBlockSpeedFactor(CallbackInfoReturnable<Float> cir) {
+        LivingEntity entity = (LivingEntity) (Object) this;
+
+        if (dreamRelics$hasIcarusWings(entity)) {
+            if (!entity.onGround() && !entity.onClimbable() && !entity.isInWater()) {
+                int x = (int) Math.floor(entity.getX());
+                int y = (int) Math.floor(entity.getY() - 0.2);
+                int z = (int) Math.floor(entity.getZ());
+
+                BlockState blockState = entity.level().getBlockState(net.minecraft.core.BlockPos.containing(x, y, z));
+                float friction = blockState.getBlock().getFriction();
+
+                float baseSpeed = 1.0f;
+                float frictionBonus = Math.max(1 - friction, 0) * 0.15f;
+                float totalSpeed = baseSpeed + frictionBonus;
+
+                cir.setReturnValue(totalSpeed);
+            }
         }
     }
 }

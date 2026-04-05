@@ -22,7 +22,7 @@
   ],
   "minVersion": "0.8",
   "client": [
-    "minecraft.IcarusWingsMixin"
+    "minecraft.ElvenBootsMixin"
   ],
   "mixinextras": {
     "minVersion": "0.5.0"
