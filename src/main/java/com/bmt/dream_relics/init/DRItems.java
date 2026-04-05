@@ -30,7 +30,7 @@ public class DRItems {
     public static final RegistryObject<Item> TASSEL_RING = ITEMS.register("tassel_ring",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.tassel_ring"));
     public static final RegistryObject<Item> OBSERVE_SELF_EYE = ITEMS.register("observe_self_eye",
-            () -> new Item(new Item.Properties()));
+            () -> new DreamRelicItem(new Item.Properties(),"tooltip.dream_relics.observe_self_eye"));
     public static final RegistryObject<Item> DREAM_BALANCE = ITEMS.register("dream_balance",
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> PAST_RING = ITEMS.register("past_ring",

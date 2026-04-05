@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,7 +57,7 @@ public class MomentStoneItem extends Item {
     }
 
     private boolean canAccelerate(BlockState state) {
-        return state.isRandomlyTicking() || state.getBlock() instanceof BaseEntityBlock;
+        return !state.isAir();
     }
 
     @Override
@@ -76,7 +75,7 @@ public class MomentStoneItem extends Item {
                 int remainingSeconds = (int) Math.ceil(remainingTicks / 20.0);
                 if (remainingSeconds > 0) {
                     tooltip.add(Component.translatable("item.dream_relics.moment_stone.cooldown", remainingSeconds)
-                            .withStyle(ChatFormatting.GOLD));
+                            .withStyle(ChatFormatting.BLUE));
                 }
             }
         }

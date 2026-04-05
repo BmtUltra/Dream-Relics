@@ -4,6 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
@@ -117,6 +118,7 @@ public class MemoryStardustItem extends DreamRelicItem {
                 playRemoveOneSound(player);
                 slot.safeInsert(stack);
             });
+            return true;
         } else if (canAdd(clickItem)) {
             int addCount = add(stardust, clickItem, true);
             if (addCount > 0) {
@@ -126,8 +128,9 @@ public class MemoryStardustItem extends DreamRelicItem {
                 }
                 playInsertSound(player);
             }
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -146,14 +149,15 @@ public class MemoryStardustItem extends DreamRelicItem {
                 playRemoveOneSound(player);
                 access.set(stack);
             });
+            return true;
         } else {
             int added = add(stardust, other);
             if (added > 0) {
                 playInsertSound(player);
                 other.shrink(added);
             }
+            return added > 0;
         }
-        return true;
     }
 
     @Override
@@ -199,7 +203,7 @@ public class MemoryStardustItem extends DreamRelicItem {
         return true;
     }
 
-    private void toggleMethod(MethodName mn, ItemStack stardust, SlotContext slotContext, ItemStack otherStack) {
+    private void toggleMethod(MethodName methodName, ItemStack stardust, SlotContext slotContext, ItemStack otherStack) {
         if (!hasItems(stardust)) return;
 
         ItemStackHandler items = getItems(stardust);
@@ -208,10 +212,14 @@ public class MemoryStardustItem extends DreamRelicItem {
             if (relic.isEmpty()) continue;
 
             if (relic.getItem() instanceof ICurioItem curioItem) {
-                switch (mn) {
-                    case EQ -> curioItem.onEquip(slotContext, otherStack, relic);
-                    case UN -> curioItem.onUnequip(slotContext, otherStack, relic);
-                    case CT -> curioItem.curioTick(slotContext, relic);
+                try {
+                    switch (methodName) {
+                        case EQ -> curioItem.onEquip(slotContext, otherStack, relic);
+                        case UN -> curioItem.onUnequip(slotContext, otherStack, relic);
+                        case CT -> curioItem.curioTick(slotContext, relic);
+                    }
+                } catch (Exception ignored) {
+                    // 防止某个 curios 异常影响其他
                 }
             }
         }
@@ -221,19 +229,15 @@ public class MemoryStardustItem extends DreamRelicItem {
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
 
-        if (hasItems(stack)) {
+        if (hasItems(stack) && flag.isAdvanced()) {
             ItemStackHandler items = getItems(stack);
+            tooltip.add(Component.empty());
             for (int i = 0; i < items.getSlots(); i++) {
-                items.getStackInSlot(i).isEmpty();
-            }
-
-            if (flag.isAdvanced()) {
-                for (int i = 0; i < items.getSlots(); i++) {
-                    ItemStack relic = items.getStackInSlot(i);
-                    if (!relic.isEmpty()) {
-                        tooltip.add(Component.literal("  " + (i + 1) + ". ").append(relic.getHoverName())
-                                .withStyle(ChatFormatting.DARK_GRAY));
-                    }
+                ItemStack relic = items.getStackInSlot(i);
+                if (!relic.isEmpty()) {
+                    tooltip.add(Component.literal("  " + (i + 1) + ". ")
+                            .append(relic.getHoverName())
+                            .withStyle(ChatFormatting.GRAY));
                 }
             }
         }
@@ -249,18 +253,16 @@ public class MemoryStardustItem extends DreamRelicItem {
     }
 
     private void playRemoveOneSound(Entity entity) {
-        entity.playSound(net.minecraft.sounds.SoundEvents.BUNDLE_REMOVE_ONE, 0.8F,
+        entity.playSound(SoundEvents.BUNDLE_REMOVE_ONE, 0.8F,
                 0.8F + entity.level().getRandom().nextFloat() * 0.4F);
     }
 
     private void playInsertSound(Entity entity) {
-        entity.playSound(net.minecraft.sounds.SoundEvents.BUNDLE_INSERT, 0.8F,
+        entity.playSound(SoundEvents.BUNDLE_INSERT, 0.8F,
                 0.8F + entity.level().getRandom().nextFloat() * 0.4F);
     }
 
     public enum MethodName {
-        EQ,
-        UN,
-        CT
+        EQ, UN, CT
     }
 }

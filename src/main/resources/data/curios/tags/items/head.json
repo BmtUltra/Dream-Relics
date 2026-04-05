@@ -8,6 +8,10 @@
     {
       "id": "dream_relics:royal_crown",
       "required": false
+    },
+    {
+      "id": "dream_relics:observe_self_eye",
+      "required": false
     }
   ]
 }

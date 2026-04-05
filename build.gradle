@@ -130,6 +130,7 @@ dependencies {
     implementation fg.deobf("curse.maven:screenshot-to-clipboard-326950:3643026")
     implementation fg.deobf("curse.maven:mmmmmmmmmmmm-225738:6860192")
     implementation fg.deobf("curse.maven:selene-499980:7388296")
+    implementation fg.deobf("curse.maven:kaleidoscope-cookery-1309203:7473809")
 //    implementation fg.deobf("curse.maven:artifacts-312353:6351716")
 //    implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
 //    implementation fg.deobf("maven.modrinth:cloth-config:11.1.136+forge")

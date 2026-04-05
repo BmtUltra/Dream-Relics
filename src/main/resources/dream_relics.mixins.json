@@ -8,6 +8,7 @@
     "minecraft.AnimalMixin",
     "minecraft.BlockMixin",
     "minecraft.CuriosEventHandlerMixin",
+    "minecraft.CuriosHelperMixin",
     "minecraft.ExperienceOrbMixin",
     "minecraft.FoodDataMixin",
     "minecraft.InventoryMixin",
@@ -22,7 +23,8 @@
   ],
   "minVersion": "0.8",
   "client": [
-    "minecraft.ElvenBootsMixin"
+    "minecraft.ElvenBootsMixin",
+    "minecraft.LivingEntityGlowMixin"
   ],
   "mixinextras": {
     "minVersion": "0.5.0"
