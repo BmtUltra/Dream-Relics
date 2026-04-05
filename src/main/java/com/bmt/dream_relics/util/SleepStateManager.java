@@ -1,6 +1,8 @@
 package com.bmt.dream_relics.util;
 
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 
@@ -74,6 +76,41 @@ public class SleepStateManager {
             }
             entity.setDeltaMovement(0, 0, 0);
 
+            if (entity.level() instanceof ServerLevel serverLevel && currentTicks % 10 == 0) {
+                double centerX = entity.getX();
+                double centerY = entity.getY() + entity.getBbHeight() * 0.5;
+                double centerZ = entity.getZ();
+
+                float width = entity.getBbWidth();
+                float height = entity.getBbHeight();
+                float innerRange = Math.max(width, height) * 0.4f;
+                float outerRange = Math.max(width, height) * 1.2f;
+
+                for (int i = 0; i < 4; i++) {
+                    float currentRange;
+                    if (i == 0) {
+                        currentRange = innerRange;
+                    } else {
+                        currentRange = outerRange;
+                    }
+
+                    double offsetX = (serverLevel.random.nextDouble() - 0.5) * currentRange;
+                    double offsetY = (serverLevel.random.nextDouble() - 0.5) * height * 0.8;
+                    double offsetZ = (serverLevel.random.nextDouble() - 0.5) * currentRange;
+
+                    double particleX = centerX + offsetX;
+                    double particleY = centerY + offsetY;
+                    double particleZ = centerZ + offsetZ;
+
+                    if (i % 2 == 0) {
+                        serverLevel.sendParticles(ParticleTypes.WAX_ON, particleX, particleY, particleZ,
+                                1, 0.15, 0.15, 0.15, 0.03);
+                    } else {
+                        serverLevel.sendParticles(ParticleTypes.WAX_OFF, particleX, particleY, particleZ,
+                                1, 0.15, 0.15, 0.15, 0.03);
+                    }
+                }
+            }
             if (currentTicks >= duration) {
                 removeSleep(entity);
             }

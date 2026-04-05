@@ -9,15 +9,24 @@ import com.bmt.dream_relics.item.YearsAmber;
 import com.bmt.dream_relics.init.DRCapabilities;
 import com.bmt.dream_relics.init.DRItems;
 import com.bmt.dream_relics.util.DRUtil;
+import com.bmt.dream_relics.util.FlowStateManager;
 import com.bmt.dream_relics.util.SleepStateManager;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AnvilUpdateEvent;
@@ -162,6 +171,9 @@ public class EventHandler {
         public static void LivingTickEvent(LivingEvent.LivingTickEvent event) {
             LivingEntity entity = event.getEntity();
             SleepStateManager.updateSleepState(entity);
+            if (!entity.level().isClientSide && entity.tickCount % 20 == 0) {
+                FlowStateManager.updateFlowStates(entity.level());
+            }
         }
 
         @SubscribeEvent
@@ -273,8 +285,7 @@ public class EventHandler {
 
                     if (Math.abs(currentModifier - 1.5F) < 0.01F) {
                         event.setDamageModifier(2.0F);
-                    }
-                    else if (currentModifier > 1.0F) {
+                    } else if (currentModifier > 1.0F) {
                         float relativeMultiplier = currentModifier / 1.5F;
                         event.setDamageModifier(relativeMultiplier * 2.0F);
                     }
@@ -331,6 +342,97 @@ public class EventHandler {
                     event.getOrb().value = (int) (originalValue * 1.5F);
                 }
             });
+        }
+
+        @SubscribeEvent
+        public static void onLivingSetTarget(LivingChangeTargetEvent event) {
+            LivingEntity target = event.getNewTarget();
+
+            if (target instanceof Player player) {
+                if (isUndeadMob(event.getEntity())) {
+                    CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
+                        if (iCuriosItemHandler.isEquipped(DRItems.DARK_WHISPER_RING.get())) {
+                            event.setCanceled(true);
+                        }
+                    });
+                }
+            }
+        }
+
+        private static boolean isUndeadMob(LivingEntity entity) {
+            return entity instanceof Zombie ||
+                    entity instanceof Skeleton ||
+                    entity instanceof WitherSkeleton ||
+                    entity instanceof Stray ||
+                    entity instanceof Husk ||
+                    entity instanceof Drowned ||
+                    entity instanceof ZombifiedPiglin ||
+                    entity instanceof Phantom ||
+                    entity instanceof WitherBoss;
+        }
+
+        @SubscribeEvent
+        public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+            Player player = event.player;
+
+            CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
+                if (iCuriosItemHandler.isEquipped(DRItems.TIME_HOURGLASS.get())) {
+                    if (!player.level().isClientSide) {
+                        if (player.tickCount % 10 == 0) {
+                            accelerateBlockTicksAroundPlayer(player);
+                        }
+                    }
+                }
+            });
+        }
+
+        private static void accelerateBlockTicksAroundPlayer(Player player) {
+            int radius = 8;
+            int centerX = (int) player.getX();
+            int centerY = (int) player.getY();
+            int centerZ = (int) player.getZ();
+
+            for (int x = centerX - radius; x <= centerX + radius; x++) {
+                for (int y = Math.max(player.level().getMinBuildHeight(), centerY - radius);
+                     y <= Math.min(player.level().getMaxBuildHeight(), centerY + radius); y++) {
+                    for (int z = centerZ - radius; z <= centerZ + radius; z++) {
+                        double distance = Math.sqrt(
+                                Math.pow(x - centerX, 2) +
+                                        Math.pow(y - centerY, 2) +
+                                        Math.pow(z - centerZ, 2)
+                        );
+                        if (distance <= radius) {
+                            BlockPos pos = new BlockPos(x, y, z);
+                            BlockState state = player.level().getBlockState(pos);
+                            BlockEntity blockEntity = player.level().getBlockEntity(pos);
+
+                            double acceleration = 1.0 + (radius - distance) / radius * 2.0;
+
+                            if (state.isRandomlyTicking()) {
+                                if (player.level().random.nextDouble() < 0.3 * (acceleration - 1.0)) {
+                                    state.randomTick((ServerLevel) player.level(), pos, player.level().random);
+                                }
+                            }
+
+                            if (blockEntity != null && state.getBlock() instanceof EntityBlock entityBlock) {
+                                @SuppressWarnings("unchecked")
+                                BlockEntityTicker<BlockEntity> ticker = (BlockEntityTicker<BlockEntity>)
+                                        entityBlock.getTicker(player.level(), state, blockEntity.getType());
+
+                                if (ticker != null && !blockEntity.isRemoved()) {
+                                    int tickCount = (int) Math.max(1, acceleration);
+                                    for (int i = 0; i < tickCount; i++) {
+                                        if (blockEntity.isRemoved()) {
+                                            break;
+                                        }
+                                        ticker.tick(player.level(), pos, state, blockEntity);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

@@ -16,6 +16,10 @@
     {
       "id": "dream_relics:dream_totem",
       "required": false
+    },
+    {
+      "id": "dream_relics:time_hourglass",
+      "required": false
     }
   ]
 }

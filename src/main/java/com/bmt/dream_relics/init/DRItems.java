@@ -16,7 +16,7 @@ public class DRItems {
     public static final RegistryObject<Item> DREAM_TOTEM = ITEMS.register("dream_totem",
             () -> new DreamTotem(new Item.Properties()));
     public static final RegistryObject<Item> MOMENT_STONE = ITEMS.register("moment_stone",
-            () -> new Item(new Item.Properties()));
+            () -> new MomentStoneItem(new Item.Properties()));
     public static final RegistryObject<Item> ENDLESS_DREAM = ITEMS.register("endless_dream",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.endless_dream"));
     public static final RegistryObject<Item> YEARS_AMBER = ITEMS.register("years_amber",
@@ -24,7 +24,7 @@ public class DRItems {
     public static final RegistryObject<Item> MEMORY_STARDUST = ITEMS.register("memory_stardust",
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> TIME_HOURGLASS = ITEMS.register("time_hourglass",
-            () -> new Item(new Item.Properties()));
+            () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.time_hourglass"));
     public static final RegistryObject<Item> ASTRAL_NECKLACE = ITEMS.register("astral_necklace",
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> TASSEL_RING = ITEMS.register("tassel_ring",
@@ -42,7 +42,7 @@ public class DRItems {
     public static final RegistryObject<Item> SLEEPING_STAR_SEED = ITEMS.register("sleeping_star_seed",
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> LIMINAL_KEY = ITEMS.register("liminal_key",
-            () -> new Item(new Item.Properties()));
+            () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.liminal_key"));
     public static final RegistryObject<Item> HEART_VOICE_PENDANT = ITEMS.register("heart_voice_pendant",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.heart_voice_pendant"));
     public static final RegistryObject<Item> AWAKEN_DREAM_BRACELET = ITEMS.register("awaken_dream_bracelet",
@@ -54,7 +54,7 @@ public class DRItems {
     public static final RegistryObject<Item> VOID_NECKLACE = ITEMS.register("void_necklace",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.void_necklace"));
     public static final RegistryObject<Item> DARK_WHISPER_RING = ITEMS.register("dark_whisper_ring",
-            () -> new Item(new Item.Properties()));
+            () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.dark_whisper_ring"));
     public static final RegistryObject<Item> DARK_WHISPER_DAGGER = ITEMS.register("dark_whisper_dagger",
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> FLAWLESS_GEM = ITEMS.register("flawless_gem",
