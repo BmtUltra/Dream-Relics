@@ -15,7 +15,7 @@ import java.util.UUID;
 public class NightmareBook extends DreamRelicItemBase implements ICurioItem {
 
     public NightmareBook(Properties properties) {
-        super(properties.stacksTo(1).rarity(Rarity.COMMON));
+        super(properties.stacksTo(1));
     }
 
     @Override

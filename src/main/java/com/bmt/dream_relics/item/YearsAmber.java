@@ -16,7 +16,6 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -33,15 +32,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class YearsAmber extends DreamRelicItemBase {
+public class YearsAmber extends DreamRelicItem {
     public YearsAmber(Properties properties) {
-        super(properties.stacksTo(1).rarity(Rarity.COMMON));
+        super(properties.stacksTo(1));
     }
 
     @Override
     public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> list, @NotNull TooltipFlag tooltipFlag) {
         if (!DRClient.IS_ALT_DOWN) {
-            list.add(Component.translatable("item.dream_relics.years_amber.show").withStyle(ChatFormatting.GOLD));
+            list.add(Component.translatable("item.dream_relics.years_amber.show"));
         }
     }
 

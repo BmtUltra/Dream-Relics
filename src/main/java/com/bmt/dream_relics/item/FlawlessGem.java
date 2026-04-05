@@ -5,7 +5,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -19,7 +18,7 @@ import java.util.Map;
 public class FlawlessGem extends DreamRelicItemBase {
 
     public FlawlessGem(Properties properties) {
-        super(properties.stacksTo(16).rarity(Rarity.RARE));
+        super(properties.stacksTo(16));
     }
 
     public static ItemStack removeNegativeEnchantments(ItemStack itemStack) {

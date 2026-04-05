@@ -33,8 +33,8 @@
   "item.dream_relics.elven_boots": "精灵之靴",
   "item.dream_relics.rare_gold_bracelet": "稀金手镯",
 
-  "curios.identifier.feet": "脚饰",
-  "curios.modifiers.feet": "佩戴脚饰时：",
+  "curios.identifier.feet": "足部",
+  "curios.modifiers.feet": "佩戴足部时：",
 
   "item.dream_relics.soul_mirror.cooldown": "冷却时间：%s秒",
   "death.dream_relics.no_death_point": "灵魂并没有散落",
