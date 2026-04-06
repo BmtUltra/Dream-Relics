@@ -3,9 +3,7 @@ package com.bmt.dream_relics.common;
 import com.bmt.dream_relics.DreamRelics;
 import com.bmt.dream_relics.common.capabilities.PlayerData;
 import com.bmt.dream_relics.common.capabilities.YearsAmberItemHandler;
-import com.bmt.dream_relics.item.DreamTotem;
-import com.bmt.dream_relics.item.FlawlessGem;
-import com.bmt.dream_relics.item.YearsAmber;
+import com.bmt.dream_relics.item.*;
 import com.bmt.dream_relics.init.DRCapabilities;
 import com.bmt.dream_relics.init.DRItems;
 import com.bmt.dream_relics.util.DRUtil;
@@ -513,8 +511,30 @@ public class EventHandler {
         }
 
         @SubscribeEvent
+        public static void onLivingHurt(LivingHurtEvent event) {
+            if (event.getEntity() instanceof Player player) {
+                MemoryNecklaceItem.recordDamage(player, event.getAmount());
+            }
+
+            if (event.getSource().getEntity() instanceof Player player) {
+                float originalDamage = event.getAmount();
+                float newDamage = MemoryNecklaceItem.applyStoredDamage(player, originalDamage);
+
+                if (newDamage != originalDamage) {
+                    event.setAmount(newDamage);
+                }
+            }
+        }
+
+        @SubscribeEvent
         public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
             Player player = event.player;
+
+            if (PastRingItem.isEquipped(player)) {
+                if (player.tickCount % 100 == 0) {
+                    PastRingItem.repairPlayerItems(player);
+                }
+            }
 
             CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
                 if (iCuriosItemHandler.isEquipped(DRItems.TIME_HOURGLASS.get())) {

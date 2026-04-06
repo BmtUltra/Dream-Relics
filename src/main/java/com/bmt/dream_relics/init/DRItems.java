@@ -35,11 +35,11 @@ public class DRItems {
     public static final RegistryObject<Item> DREAM_BALANCE = ITEMS.register("dream_balance",
             () -> new DreamRelicItem(new Item.Properties(),"tooltip.dream_relics.dream_balance"));
     public static final RegistryObject<Item> PAST_RING = ITEMS.register("past_ring",
-            () -> new Item(new Item.Properties()));
+            () -> new PastRingItem(new Item.Properties()));
     public static final RegistryObject<Item> ECHO_EARRING = ITEMS.register("echo_earring",
             () -> new DreamRelicItem(new Item.Properties(),"tooltip.dream_relics.echo_earring"));
     public static final RegistryObject<Item> MEMORY_NECKLACE = ITEMS.register("memory_necklace",
-            () -> new Item(new Item.Properties()));
+            () -> new MemoryNecklaceItem(new Item.Properties()));
     public static final RegistryObject<Item> SLEEPING_STAR_SEED = ITEMS.register("sleeping_star_seed",
             () -> new SleepingStarSeedItem(new Item.Properties()));
     public static final RegistryObject<Item> LIMINAL_KEY = ITEMS.register("liminal_key",
@@ -61,11 +61,11 @@ public class DRItems {
     public static final RegistryObject<Item> FLAWLESS_GEM = ITEMS.register("flawless_gem",
             () -> new FlawlessGem(new Item.Properties()));
     public static final RegistryObject<Item> ROYAL_LENS = ITEMS.register("royal_lens",
-            () -> new DreamRelicItem(new Item.Properties().rarity(Rarity.UNCOMMON), "tooltip.dream_relics.royal_lens"));
+            () -> new DreamRelicItem(new Item.Properties().rarity(Rarity.COMMON), "tooltip.dream_relics.royal_lens"));
     public static final RegistryObject<Item> ROYAL_CROWN = ITEMS.register("royal_crown",
-            () -> new DreamRelicItem(new Item.Properties().rarity(Rarity.UNCOMMON), "tooltip.dream_relics.royal_crown"));
+            () -> new DreamRelicItem(new Item.Properties().rarity(Rarity.COMMON), "tooltip.dream_relics.royal_crown"));
     public static final RegistryObject<Item> OCEAN_CURRENT_BLESSING = ITEMS.register("ocean_current_blessing",
-            () -> new DreamRelicItem(new Item.Properties().rarity(Rarity.RARE), "tooltip.dream_relics.ocean_current_blessing"));
+            () -> new DreamRelicItem(new Item.Properties().rarity(Rarity.COMMON), "tooltip.dream_relics.ocean_current_blessing"));
     public static final RegistryObject<Item> ICARUS_WINGS = ITEMS.register("icarus_wings",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.icarus_wings"));
     public static final RegistryObject<Item> PURE_HOLY_GRAIL = ITEMS.register("pure_holy_grail",

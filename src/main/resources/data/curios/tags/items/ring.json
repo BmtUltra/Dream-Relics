@@ -12,6 +12,10 @@
     {
       "id": "dream_relics:dark_whisper_ring",
       "required": false
+    },
+    {
+      "id": "dream_relics:past_ring",
+      "required": false
     }
   ]
 }
