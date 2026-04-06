@@ -12,6 +12,10 @@
     {
       "id": "dream_relics:astral_necklace",
       "required": false
+    },
+    {
+      "id": "dream_relics:memory_necklace",
+      "required": false
     }
   ]
 }

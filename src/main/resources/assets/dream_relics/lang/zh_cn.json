@@ -66,9 +66,10 @@
   "tooltip.dream_relics.astral_necklace": "§7造成伤害无视目标一定护甲值",
   "tooltip.dream_relics.awaken_dream_bracelet": "§7始终保持睡觉状态",
   "tooltip.dream_relics.dark_whisper_dagger": "§7攻击使目标短暂失语",
-  "tooltip.dream_relics.sleeping_star_seed": "§7右键生物使其沉睡",
+  "tooltip.dream_relics.sleeping_star_seed": "§7对生物使用使其沉睡",
   "item.dream_relics.sleeping_star_seed.cooldown": "冷却时间：%s秒",
   "tooltip.dream_relics.dream_balance": "§7佩戴后使每级所需的经验值相同",
+  "tooltip.dream_relics.echo_earring": "§7攻击后有概率触发回响",
 
   "item.dream_relics.tooltip.item.nightmare_book.effect1": "§7增加受到的伤害",
   "item.dream_relics.tooltip.item.nightmare_book.effect2": "§7负面药水效果持续时间翻倍",

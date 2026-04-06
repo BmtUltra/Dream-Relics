@@ -12,6 +12,10 @@
     {
       "id": "dream_relics:observe_self_eye",
       "required": false
+    },
+    {
+      "id": "dream_relics:echo_earring",
+      "required": false
     }
   ]
 }

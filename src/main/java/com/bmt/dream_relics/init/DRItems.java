@@ -37,7 +37,7 @@ public class DRItems {
     public static final RegistryObject<Item> PAST_RING = ITEMS.register("past_ring",
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ECHO_EARRING = ITEMS.register("echo_earring",
-            () -> new Item(new Item.Properties()));
+            () -> new DreamRelicItem(new Item.Properties(),"tooltip.dream_relics.echo_earring"));
     public static final RegistryObject<Item> MEMORY_NECKLACE = ITEMS.register("memory_necklace",
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> SLEEPING_STAR_SEED = ITEMS.register("sleeping_star_seed",

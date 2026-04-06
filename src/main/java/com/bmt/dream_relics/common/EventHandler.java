@@ -15,19 +15,19 @@ import com.bmt.dream_relics.util.SleepStateManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AnvilUpdateEvent;
@@ -67,13 +67,20 @@ public class EventHandler {
 
         @SubscribeEvent
         public static void LivingHurtEvent(LivingHurtEvent event) {
-//            if (event.getSource().getEntity() instanceof Player player) {
-//                boolean hasDagger = player.getMainHandItem().getItem() == DRItems.DARK_WHISPER_DAGGER.get() ||
-//                        player.getOffhandItem().getItem() == DRItems.DARK_WHISPER_DAGGER.get();
-//                if (hasDagger) {
-//                    MuteStateManager.setMuted(event.getEntity());
-//                }
-//            }
+
+            if (event.getSource().getEntity() instanceof Player player) {
+                CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
+                    if (iCuriosItemHandler.isEquipped(DRItems.ECHO_EARRING.get())) {
+                        if (player.getRandom().nextFloat() < 0.30f) {
+                            LivingEntity target = event.getEntity();
+                            float baseDamage = event.getAmount();
+                            float extraDamage = baseDamage * 0.40f;
+
+                            triggerSonicWave(player, target, extraDamage);
+                        }
+                    }
+                });
+            }
 
             if (event.getSource().getEntity() instanceof LivingEntity attacker) {
                 if (MuteStateManager.isMuted(attacker)) {
@@ -162,6 +169,57 @@ public class EventHandler {
                         }
                     });
                 }
+            }
+        }
+
+        private static void triggerSonicWave(Player player, LivingEntity target, float extraDamage) {
+            if (player.level().isClientSide) {
+                return;
+            }
+
+            float range = 8.0f;
+            float width = 0.4f;
+
+            Vec3 start = player.getEyePosition();
+            Vec3 end = start.add(player.getForward().scale(range));
+
+            AABB boundingBox = player.getBoundingBox().expandTowards(end.subtract(start));
+            List<LivingEntity> entities = player.level().getEntitiesOfClass(
+                    LivingEntity.class, boundingBox,
+                    entity -> entity != player && entity.isAlive()
+            );
+
+            player.level().playSound(null, target.getX(), target.getY(), target.getZ(),
+                    net.minecraft.sounds.SoundEvents.ELDER_GUARDIAN_CURSE,
+                    net.minecraft.sounds.SoundSource.PLAYERS, 0.8f, 1.2f);
+
+            for (LivingEntity entity : entities) {
+                net.minecraft.world.phys.HitResult hit = checkEntityIntersecting(entity, start, end, width);
+                if (hit.getType() != net.minecraft.world.phys.HitResult.Type.MISS) {
+                    entity.hurt(player.damageSources().sonicBoom(player), extraDamage);
+                }
+            }
+
+            ServerLevel serverLevel = (ServerLevel) player.level();
+            Vec3 direction = player.getLookAngle().normalize();
+
+            for (int i = 2; i < range; i++) {
+                Vec3 particlePos = direction.scale(i).add(player.getEyePosition());
+                serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.SONIC_BOOM,
+                        particlePos.x, particlePos.y, particlePos.z, 1, 0, 0, 0, 0);
+            }
+        }
+
+        private static net.minecraft.world.phys.HitResult checkEntityIntersecting(Entity entity, Vec3 start, Vec3 end, float width) {
+            AABB entityBox = entity.getBoundingBox().inflate(width);
+
+            java.util.Optional<Vec3> intersection = entityBox.clip(start, end);
+
+            if (intersection.isPresent()) {
+                Vec3 hitPos = intersection.get();
+                return new net.minecraft.world.phys.EntityHitResult(entity, hitPos);
+            } else {
+                return net.minecraft.world.phys.BlockHitResult.miss(end, net.minecraft.core.Direction.UP, net.minecraft.core.BlockPos.containing(end));
             }
         }
 
