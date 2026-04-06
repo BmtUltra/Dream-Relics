@@ -246,6 +246,68 @@ public class EventHandler {
         }
 
         @SubscribeEvent
+        public static void onBlockBreak(net.minecraftforge.event.level.BlockEvent.BreakEvent event) {
+            Player player = event.getPlayer();
+
+            if (player == null) {
+                return;
+            }
+
+            CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
+                if (iCuriosItemHandler.isEquipped(DRItems.RARE_GOLD_BRACELET.get())) {
+                    if (isOreBlock(event.getState())) {
+                        if (player.getRandom().nextFloat() < 0.30f) {
+                            List<ItemStack> drops = net.minecraft.world.level.block.Block.getDrops(
+                                    event.getState(),
+                                    (ServerLevel) event.getLevel(),
+                                    event.getPos(),
+                                    event.getLevel().getBlockEntity(event.getPos()),
+                                    player,
+                                    player.getMainHandItem()
+                            );
+
+                            for (ItemStack drop : drops) {
+                                if (!drop.isEmpty()) {
+                                    ItemStack copy = drop.copy();
+                                    net.minecraft.world.entity.item.ItemEntity itemEntity =
+                                            new net.minecraft.world.entity.item.ItemEntity(
+                                                    player.level(),
+                                                    event.getPos().getX() + 0.5,
+                                                    event.getPos().getY() + 0.5,
+                                                    event.getPos().getZ() + 0.5,
+                                                    copy
+                                            );
+                                    player.level().addFreshEntity(itemEntity);
+                                }
+                            }
+
+                            if (!player.level().isClientSide) {
+                                ServerLevel serverLevel = (ServerLevel) player.level();
+
+                                player.level().playSound(null, event.getPos(),
+                                        net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_CHIME,
+                                        net.minecraft.sounds.SoundSource.BLOCKS, 0.5f, 1.2f);
+
+                                for (int i = 0; i < 10; i++) {
+                                    double x = event.getPos().getX() + 0.5 + (player.getRandom().nextDouble() - 0.5);
+                                    double y = event.getPos().getY() + 0.5 + (player.getRandom().nextDouble() - 0.5);
+                                    double z = event.getPos().getZ() + 0.5 + (player.getRandom().nextDouble() - 0.5);
+
+                                    serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.GLOW,
+                                            x, y, z, 1, 0, 0, 0, 0);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        private static boolean isOreBlock(net.minecraft.world.level.block.state.BlockState state) {
+            return state.is(net.minecraftforge.common.Tags.Blocks.ORES);
+        }
+
+        @SubscribeEvent
         public static void LivingTickEvent(LivingEvent.LivingTickEvent event) {
             LivingEntity entity = event.getEntity();
             SleepStateManager.updateSleepState(entity);
