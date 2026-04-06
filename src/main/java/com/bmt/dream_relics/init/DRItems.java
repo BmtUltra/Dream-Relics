@@ -41,7 +41,7 @@ public class DRItems {
     public static final RegistryObject<Item> MEMORY_NECKLACE = ITEMS.register("memory_necklace",
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> SLEEPING_STAR_SEED = ITEMS.register("sleeping_star_seed",
-            () -> new Item(new Item.Properties()));
+            () -> new SleepingStarSeedItem(new Item.Properties()));
     public static final RegistryObject<Item> LIMINAL_KEY = ITEMS.register("liminal_key",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.liminal_key"));
     public static final RegistryObject<Item> HEART_VOICE_PENDANT = ITEMS.register("heart_voice_pendant",
