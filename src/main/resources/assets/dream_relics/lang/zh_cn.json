@@ -43,7 +43,7 @@
   "item.dream_relics.tooltip.dream_totem.essence": "梦质: %s/%s",
   "item.dream_relics.tooltip.dream_totem.restore": "睡觉可以恢复梦质",
   "item.dream_relics.tooltip.dream_totem.auto_trigger": "受到致命伤害时使附近的生物进入沉睡",
-  "tooltip.dream_relics.endless_dream": "§7攻击到生命值百分比大于一定值的目标使其进入沉睡",
+  "tooltip.dream_relics.endless_dream": "§7攻击有概率使目标使其进入沉睡",
   "tooltip.dream_relics.tassel_ring": "§7目标生命值百分比越高对其造成的伤害越高",
   "tooltip.dream_relics.heart_voice_pendant": "§7受到的伤害不会超过最大生命值的一部分",
   "tooltip.dream_relics.mist_veil_ring": "§7免疫负面效果",
@@ -63,6 +63,9 @@
   "tooltip.dream_relics.liminal_key": "§7对物品使用可以转移附魔",
   "tooltip.dream_relics.memory_stardust": "§7可以存储饰品，佩戴时里面的饰品均生效",
   "tooltip.dream_relics.observe_self_eye": "§7注视附近的生物，使其轮廓显现",
+  "tooltip.dream_relics.astral_necklace": "§7造成伤害无视目标一定护甲值",
+  "tooltip.dream_relics.awaken_dream_bracelet": "§7始终保持睡觉状态",
+  "tooltip.dream_relics.dark_whisper_dagger": "§7攻击使目标短暂失语",
 
   "item.dream_relics.tooltip.item.nightmare_book.effect1": "§7增加受到的伤害",
   "item.dream_relics.tooltip.item.nightmare_book.effect2": "§7负面药水效果持续时间翻倍",

@@ -1,5 +1,7 @@
 package com.bmt.dream_relics.item;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -7,6 +9,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
@@ -21,8 +25,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class MemoryStardustItem extends DreamRelicItem {
     private static final int MAX_SIZE = 9;
@@ -203,6 +206,39 @@ public class MemoryStardustItem extends DreamRelicItem {
         return true;
     }
 
+    @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
+        Multimap<Attribute, AttributeModifier> result = ArrayListMultimap.create();
+
+        if (!hasItems(stack)) {
+            return result;
+        }
+
+        ItemStackHandler items = getItems(stack);
+        for (int i = 0; i < items.getSlots(); i++) {
+            ItemStack relic = items.getStackInSlot(i);
+            if (relic.isEmpty()) continue;
+
+            if (relic.getItem() instanceof ICurioItem curioItem) {
+                UUID slotUuid = new UUID(uuid.getMostSignificantBits() + i, uuid.getLeastSignificantBits() + i);
+
+                try {
+                    Multimap<
+                            Attribute,
+                            AttributeModifier> relicModifiers = curioItem.getAttributeModifiers(slotContext, slotUuid, relic);
+
+                    if (relicModifiers != null) {
+                        for (Attribute attr : relicModifiers.keySet()) {
+                            result.putAll(attr, relicModifiers.get(attr));
+                        }
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        return result;
+    }
+
     private void toggleMethod(MethodName methodName, ItemStack stardust, SlotContext slotContext, ItemStack otherStack) {
         if (!hasItems(stardust)) return;
 
@@ -219,7 +255,7 @@ public class MemoryStardustItem extends DreamRelicItem {
                         case CT -> curioItem.curioTick(slotContext, relic);
                     }
                 } catch (Exception ignored) {
-                    // 防止某个 curios 异常影响其他
+
                 }
             }
         }

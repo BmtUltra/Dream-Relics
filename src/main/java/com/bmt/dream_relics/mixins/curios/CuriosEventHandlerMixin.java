@@ -1,4 +1,4 @@
-package com.bmt.dream_relics.mixins.minecraft;
+package com.bmt.dream_relics.mixins.curios;
 
 import com.bmt.dream_relics.util.DRUtil;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -17,7 +17,6 @@ public class CuriosEventHandlerMixin {
         if (key == GameRules.RULE_KEEPINVENTORY && DRUtil.isEquippedNightmareBook(event.getEntity())) {
             return false;
         }
-
         return original.call(instance, key);
     }
 }

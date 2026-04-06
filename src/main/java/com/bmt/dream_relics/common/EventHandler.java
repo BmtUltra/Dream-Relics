@@ -10,6 +10,7 @@ import com.bmt.dream_relics.init.DRCapabilities;
 import com.bmt.dream_relics.init.DRItems;
 import com.bmt.dream_relics.util.DRUtil;
 import com.bmt.dream_relics.util.FlowStateManager;
+import com.bmt.dream_relics.util.MuteStateManager;
 import com.bmt.dream_relics.util.SleepStateManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -66,6 +67,29 @@ public class EventHandler {
 
         @SubscribeEvent
         public static void LivingHurtEvent(LivingHurtEvent event) {
+//            if (event.getSource().getEntity() instanceof Player player) {
+//                boolean hasDagger = player.getMainHandItem().getItem() == DRItems.DARK_WHISPER_DAGGER.get() ||
+//                        player.getOffhandItem().getItem() == DRItems.DARK_WHISPER_DAGGER.get();
+//                if (hasDagger) {
+//                    MuteStateManager.setMuted(event.getEntity());
+//                }
+//            }
+
+            if (event.getSource().getEntity() instanceof LivingEntity attacker) {
+                if (MuteStateManager.isMuted(attacker)) {
+                    float damageMultiplier = MuteStateManager.getDamageMultiplier(attacker);
+                    event.setAmount(event.getAmount() * damageMultiplier);
+                }
+            }
+
+            if (event.getSource().getEntity() instanceof Player player) {
+                boolean hasDagger = player.getMainHandItem().getItem() == DRItems.DARK_WHISPER_DAGGER.get() ||
+                        player.getOffhandItem().getItem() == DRItems.DARK_WHISPER_DAGGER.get();
+                if (hasDagger) {
+                    MuteStateManager.setMuted(event.getEntity());
+                }
+            }
+
             if (event.getSource().getEntity() instanceof Player player) {
                 CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
                     if (iCuriosItemHandler.isEquipped(DRItems.NIGHTMARE_BOOK.get())) {
@@ -93,11 +117,7 @@ public class EventHandler {
                         if (event.getEntity() instanceof LivingEntity) {
                             LivingEntity attackedEntity = event.getEntity();
                             if (!(attackedEntity instanceof Player)) {
-                                float currentHealth = attackedEntity.getHealth();
-                                float maxHealth = attackedEntity.getMaxHealth();
-                                float healthPercentage = (currentHealth / maxHealth) * 100;
-
-                                if (healthPercentage > 80.0f) {
+                                if (player.getRandom().nextFloat() < 0.10f) {
                                     SleepStateManager.setSleeping(attackedEntity, 60);
                                 }
                             }
@@ -171,6 +191,7 @@ public class EventHandler {
         public static void LivingTickEvent(LivingEvent.LivingTickEvent event) {
             LivingEntity entity = event.getEntity();
             SleepStateManager.updateSleepState(entity);
+            MuteStateManager.updateMuteState(entity);
             if (!entity.level().isClientSide && entity.tickCount % 20 == 0) {
                 FlowStateManager.updateFlowStates(entity.level());
             }

@@ -41,6 +41,18 @@ public abstract class LivingEntityMixin {
         return false;
     }
 
+    @Unique
+    private boolean dreamRelics$hasAstralNecklace(LivingEntity entity) {
+        if (entity instanceof net.minecraft.world.entity.player.Player player) {
+            LazyOptional<ICuriosItemHandler> optional = CuriosApi.getCuriosInventory(player);
+            if (optional.isPresent()) {
+                ICuriosItemHandler handler = optional.orElseThrow(NullPointerException::new);
+                return handler.isEquipped(DRItems.ASTRAL_NECKLACE.get());
+            }
+        }
+        return false;
+    }
+
     @Inject(method = "calculateFallDamage", at = @At("RETURN"), cancellable = true)
     public void dreamRelics$modifyFallDamage(float fallDistance, float damageMultiplier, CallbackInfoReturnable<Integer> cir) {
         LivingEntity entity = (LivingEntity) (Object) this;
@@ -85,6 +97,26 @@ public abstract class LivingEntityMixin {
                 float totalSpeed = baseSpeed + frictionBonus;
 
                 cir.setReturnValue(totalSpeed);
+            }
+        }
+    }
+
+    @Inject(method = "getDamageAfterArmorAbsorb", at = @At("HEAD"), cancellable = true)
+    private void dreamRelics$onGetDamageAfterArmorAbsorb(net.minecraft.world.damagesource.DamageSource damageSource, float damage,
+                                                         CallbackInfoReturnable<Float> cir) {
+        LivingEntity target = (LivingEntity) (Object) this;
+
+        if (damageSource.getEntity() instanceof LivingEntity attacker) {
+            if (dreamRelics$hasAstralNecklace(attacker)) {
+                float targetArmor = target.getArmorValue();
+                float percentagePenetration = targetArmor * 0.3f;
+                float fixedPenetration = 10.0f;
+                float totalPenetration = percentagePenetration + fixedPenetration;
+                float effectiveArmor = Math.max(0, targetArmor - totalPenetration);
+                float armorDamageReduction = effectiveArmor * 0.04f;
+                float totalDamageReduction = armorDamageReduction * damage;
+                float finalDamage = Math.max(0, damage - totalDamageReduction);
+                cir.setReturnValue(finalDamage);
             }
         }
     }

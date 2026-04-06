@@ -4,6 +4,7 @@ import com.bmt.dream_relics.DreamRelics;
 import com.bmt.dream_relics.item.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.Tiers;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -26,7 +27,7 @@ public class DRItems {
     public static final RegistryObject<Item> TIME_HOURGLASS = ITEMS.register("time_hourglass",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.time_hourglass"));
     public static final RegistryObject<Item> ASTRAL_NECKLACE = ITEMS.register("astral_necklace",
-            () -> new Item(new Item.Properties()));
+            () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.astral_necklace"));
     public static final RegistryObject<Item> TASSEL_RING = ITEMS.register("tassel_ring",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.tassel_ring"));
     public static final RegistryObject<Item> OBSERVE_SELF_EYE = ITEMS.register("observe_self_eye",
@@ -46,7 +47,7 @@ public class DRItems {
     public static final RegistryObject<Item> HEART_VOICE_PENDANT = ITEMS.register("heart_voice_pendant",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.heart_voice_pendant"));
     public static final RegistryObject<Item> AWAKEN_DREAM_BRACELET = ITEMS.register("awaken_dream_bracelet",
-            () -> new Item(new Item.Properties()));
+            () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.awaken_dream_bracelet"));
     public static final RegistryObject<Item> MIST_VEIL_RING = ITEMS.register("mist_veil_ring",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.mist_veil_ring"));
     public static final RegistryObject<Item> NIGHTMARE_BOOK = ITEMS.register("nightmare_book",
@@ -56,7 +57,7 @@ public class DRItems {
     public static final RegistryObject<Item> DARK_WHISPER_RING = ITEMS.register("dark_whisper_ring",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.dark_whisper_ring"));
     public static final RegistryObject<Item> DARK_WHISPER_DAGGER = ITEMS.register("dark_whisper_dagger",
-            () -> new Item(new Item.Properties()));
+            () -> new DarkWhisperDaggerItem(Tiers.IRON,1, -2.0F, new Item.Properties()));
     public static final RegistryObject<Item> FLAWLESS_GEM = ITEMS.register("flawless_gem",
             () -> new FlawlessGem(new Item.Properties()));
     public static final RegistryObject<Item> ROYAL_LENS = ITEMS.register("royal_lens",

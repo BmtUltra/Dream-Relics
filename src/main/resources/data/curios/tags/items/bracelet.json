@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "dream_relics:awaken_dream_bracelet",
+      "required": false
+    }
+  ]
+}
