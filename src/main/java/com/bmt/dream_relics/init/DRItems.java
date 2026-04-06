@@ -33,7 +33,7 @@ public class DRItems {
     public static final RegistryObject<Item> OBSERVE_SELF_EYE = ITEMS.register("observe_self_eye",
             () -> new DreamRelicItem(new Item.Properties(),"tooltip.dream_relics.observe_self_eye"));
     public static final RegistryObject<Item> DREAM_BALANCE = ITEMS.register("dream_balance",
-            () -> new Item(new Item.Properties()));
+            () -> new DreamRelicItem(new Item.Properties(),"tooltip.dream_relics.dream_balance"));
     public static final RegistryObject<Item> PAST_RING = ITEMS.register("past_ring",
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ECHO_EARRING = ITEMS.register("echo_earring",

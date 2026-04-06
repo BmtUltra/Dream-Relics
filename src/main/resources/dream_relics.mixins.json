@@ -9,6 +9,7 @@
     "curios.CuriosEventHandlerMixin",
     "minecraft.AnimalMixin",
     "minecraft.BlockMixin",
+    "minecraft.DreamBalanceMixin",
     "minecraft.ExperienceOrbMixin",
     "minecraft.FoodDataMixin",
     "minecraft.InventoryMixin",
