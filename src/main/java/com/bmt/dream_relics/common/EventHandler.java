@@ -316,26 +316,6 @@ public class EventHandler {
         }
 
         @SubscribeEvent
-        public static void PlayerWakeUpEvent(PlayerWakeUpEvent event) {
-            Player player = event.getEntity();
-
-            CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
-                List<SlotResult> results = iCuriosItemHandler.findCurios(DRItems.DREAM_TOTEM.get());
-                if (!results.isEmpty()) {
-                    ItemStack totem = results.get(0).stack();
-                    DreamTotem.addDreamEssence(totem);
-                }
-            });
-
-            for (InteractionHand hand : InteractionHand.values()) {
-                ItemStack stack = player.getItemInHand(hand);
-                if (stack.getItem() == DRItems.DREAM_TOTEM.get()) {
-                    DreamTotem.addDreamEssence(stack);
-                }
-            }
-        }
-
-        @SubscribeEvent
         public static void LivingDeathEvent(LivingDeathEvent event) {
             if (event.getEntity() instanceof Player player) {
                 boolean prevented = DreamTotem.tryAutoActivate(player, player.level());

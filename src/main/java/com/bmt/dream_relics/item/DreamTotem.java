@@ -15,7 +15,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -32,40 +31,18 @@ import java.util.List;
 
 public class DreamTotem extends DreamRelicItemBase implements ICurioItem {
 
-    private static final String DREAM_ESSENCE_KEY = "DreamEssence";
-    private static final int MAX_ESSENCE = 4;
     private static final int EFFECT_RANGE = 16;
     private static final int SLEEP_DURATION = 200;
+    private static final int COOLDOWN_TICKS = 1200;
 
     public DreamTotem(Properties properties) {
-        super(properties.stacksTo(1).rarity(Rarity.COMMON));
-    }
-
-    public static int getDreamEssence(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
-        return tag.getInt(DREAM_ESSENCE_KEY);
-    }
-
-    private static void setDreamEssence(ItemStack stack, int amount) {
-        CompoundTag tag = stack.getOrCreateTag();
-        tag.putInt(DREAM_ESSENCE_KEY, Math.min(amount, MAX_ESSENCE));
-    }
-
-    public static void addDreamEssence(ItemStack stack) {
-        int current = getDreamEssence(stack);
-        if (current < MAX_ESSENCE) {
-            setDreamEssence(stack, current + 1);
-        }
-    }
-
-    private static void consumeDreamEssence(ItemStack stack) {
-        int current = getDreamEssence(stack);
-        if (current > 0) {
-            setDreamEssence(stack, current - 1);
-        }
+        super(properties.stacksTo(1));
     }
 
     public static boolean tryAutoActivate(Player player, Level level) {
+        if (player.getCooldowns().isOnCooldown(DRItems.DREAM_TOTEM.get())) {
+            return false;
+        }
 
         LazyOptional<ICuriosItemHandler> optional = CuriosApi.getCuriosInventory(player);
         if (optional.isPresent()) {
@@ -87,45 +64,38 @@ public class DreamTotem extends DreamRelicItemBase implements ICurioItem {
     }
 
     private static boolean activateTotemForDeathPrevention(ItemStack stack, Player player, Level level) {
-        if (getDreamEssence(stack) > 0) {
+        player.getCooldowns().addCooldown(DRItems.DREAM_TOTEM.get(), COOLDOWN_TICKS);
 
-            consumeDreamEssence(stack);
+        player.setHealth(2.0F);
+        player.removeAllEffects();
+        player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
+        player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 800, 0));
+        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 1));
 
-            player.setHealth(2.0F);
-            player.removeAllEffects();
-            player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
-            player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 800, 0));
-            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 1));
+        BlockPos pos = player.blockPosition();
+        AABB area = new AABB(
+                pos.getX() - EFFECT_RANGE, pos.getY() - EFFECT_RANGE, pos.getZ() - EFFECT_RANGE,
+                pos.getX() + EFFECT_RANGE, pos.getY() + EFFECT_RANGE, pos.getZ() + EFFECT_RANGE
+        );
 
-            BlockPos pos = player.blockPosition();
-            AABB area = new AABB(
-                    pos.getX() - EFFECT_RANGE, pos.getY() - EFFECT_RANGE, pos.getZ() - EFFECT_RANGE,
-                    pos.getX() + EFFECT_RANGE, pos.getY() + EFFECT_RANGE, pos.getZ() + EFFECT_RANGE
-            );
-
-            for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, area)) {
-                if (entity instanceof Mob) {
-                    SleepStateManager.setSleeping(entity, SLEEP_DURATION);
-                }
+        for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, area)) {
+            if (entity instanceof Mob) {
+                SleepStateManager.setSleeping(entity, SLEEP_DURATION);
             }
-
-            level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
-
-            level.broadcastEntityEvent(player, (byte)35);
-
-            return true;
-        } else {
-            return false;
         }
+
+        level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
+
+        level.broadcastEntityEvent(player, (byte)35);
+
+        return true;
     }
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
 
-        tooltip.add(Component.translatable("item.dream_relics.tooltip.dream_totem.restore")
-                .withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("item.dream_relics.tooltip.dream_totem.auto_trigger")
                 .withStyle(ChatFormatting.GRAY));
     }
