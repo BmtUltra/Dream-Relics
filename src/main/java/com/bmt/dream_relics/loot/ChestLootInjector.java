@@ -20,7 +20,7 @@ public class ChestLootInjector {
     public static void onLootTableLoad(LootTableLoadEvent event) {
         ResourceLocation tableId = event.getName();
 
-        // 堡垒遗迹藏宝室箱子
+        // 堡垒遗迹藏宝藏箱子
         if (tableId.equals(ResourceLocation.withDefaultNamespace("chests/bastion_treasure")) && MainConfig.astralNecklaceChance > 0) {
             LootPool bonusPool = LootPool.lootPool()
                     .setRolls(UniformGenerator.between(1.0f, 1.0f))
