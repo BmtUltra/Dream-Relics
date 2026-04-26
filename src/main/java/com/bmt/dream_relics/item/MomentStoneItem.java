@@ -1,5 +1,6 @@
 package com.bmt.dream_relics.item;
 
+import com.bmt.dream_relics.client.DRClient;
 import com.bmt.dream_relics.util.FlowStateManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -68,7 +69,7 @@ public class MomentStoneItem extends Item {
                 .withStyle(ChatFormatting.GRAY));
 
         if (level != null && level.isClientSide) {
-            Player player = net.minecraft.client.Minecraft.getInstance().player;
+            Player player = DRClient.getLocalPlayer();
             if (player != null && player.getCooldowns().isOnCooldown(this)) {
                 float cooldownPercent = player.getCooldowns().getCooldownPercent(this, 0.0F);
                 int remainingTicks = (int) (cooldownPercent * COOLDOWN_TICKS);
