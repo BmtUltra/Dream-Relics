@@ -34,4 +34,8 @@ public class ClientEventHandler {
             }
         }
     }
+
+    static {
+        System.out.print("ClientEventHandler initialized");
+    }
 }

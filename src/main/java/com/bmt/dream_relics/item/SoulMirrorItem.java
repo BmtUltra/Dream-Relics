@@ -1,7 +1,8 @@
 package com.bmt.dream_relics.item;
 
-import com.bmt.dream_relics.config.MainConfig;
 import com.bmt.dream_relics.DreamRelics;
+import com.bmt.dream_relics.client.DRClient;
+import com.bmt.dream_relics.config.MainConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -15,7 +16,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +36,18 @@ public class SoulMirrorItem extends DreamRelicItem {
 
     @Override
     public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> list, @NotNull TooltipFlag tooltipFlag) {
+        if (level != null && level.isClientSide()) {
+            Player player = DRClient.getLocalPlayer();
+            if (player != null && player.getCooldowns().isOnCooldown(this)) {
+                float cooldownPercent = player.getCooldowns().getCooldownPercent(this, 0.0F);
+                int remainingTicks = (int) (cooldownPercent * MainConfig.cooldownTime);
+                int remainingSeconds = (int) Math.ceil(remainingTicks / 20.0);
+                if (remainingSeconds > 0) {
+                    list.add(Component.translatable("item.dream_relics.soul_mirror.cooldown", remainingSeconds)
+                            .withStyle(ChatFormatting.GOLD));
+                }
+            }
+        }
         list.add(Component.translatable("tooltip.dream_relics.soul_mirror").withStyle(ChatFormatting.GRAY));
     }
 

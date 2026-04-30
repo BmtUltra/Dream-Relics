@@ -1,14 +1,13 @@
 package com.bmt.dream_relics.client.event;
 
 import com.bmt.dream_relics.DreamRelics;
+import com.bmt.dream_relics.client.DRClient;
 import com.bmt.dream_relics.init.DRItems;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,21 +17,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("all")
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = DreamRelics.MODID)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = DreamRelics.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class GlowEffectHandler {
     private static final int RANGE = 16;
     private static final Set<LivingEntity> glowingEntities = new HashSet<>();
     private static boolean effectActive = false;
 
-    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) {
             return;
         }
 
-        Minecraft mc = Minecraft.getInstance();
-        LocalPlayer player = mc.player;
+        Player player = DRClient.getLocalPlayer();
 
         if (player == null) {
             return;
@@ -50,7 +47,7 @@ public class GlowEffectHandler {
         }
     }
 
-    private static void updateGlowingEntities(LocalPlayer player) {
+    private static void updateGlowingEntities(Player player) {
         Set<LivingEntity> newGlowingEntities = new HashSet<>();
 
         AABB area = new AABB(
@@ -77,5 +74,9 @@ public class GlowEffectHandler {
 
     public static boolean shouldEntityGlow(LivingEntity entity) {
         return glowingEntities.contains(entity);
+    }
+
+    static {
+        System.out.print("GlowEffectHandler initialized");
     }
 }

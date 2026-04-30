@@ -20,7 +20,6 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -55,9 +54,12 @@ public class YearsAmber extends DreamRelicItem {
                 if (itemstack.isEmpty()) {
                     for (int i = iItemHandler.getSlots() - 1; i >= 0; i--) {
                         if (!iItemHandler.getStackInSlot(i).isEmpty()) {
-                            @NotNull ItemStack extract = iItemHandler.extractItem(i, 1, false);
-                            slot.safeInsert(extract.copy());
-                            updateTag(stack, iItemHandler.serializeNBT());
+                            if (slot.mayPlace(iItemHandler.getStackInSlot(i))) {
+                                @NotNull ItemStack extract = iItemHandler.getStackInSlot(i);
+                                ItemStack result = slot.safeInsert(extract.copy());
+                                iItemHandler.setStackInSlot(i, result);
+                                updateTag(stack, iItemHandler.serializeNBT());
+                            }
                             break;
                         }
                     }
@@ -86,9 +88,9 @@ public class YearsAmber extends DreamRelicItem {
             handler = new YearsAmberItemHandler(4);
             handler.deserializeNBT(stack.getOrCreateTag().getCompound("Items"));
         } else {
-            @NotNull LazyOptional<YearsAmberItemHandler> lazyOptional = stack.getCapability(DRCapabilities.YEARS_AMBER_ITEM_HANDLER);
-            if (lazyOptional.isPresent()) {
-                handler = lazyOptional.orElseGet(null);
+            Optional<YearsAmberItemHandler> resolved = stack.getCapability(DRCapabilities.YEARS_AMBER_ITEM_HANDLER).resolve();
+            if (resolved.isPresent()) {
+                handler = resolved.get();
             }
         }
         if (handler == null) {
@@ -110,10 +112,10 @@ public class YearsAmber extends DreamRelicItem {
 
     @Nullable
     public static Pair<Float, ItemStack> findBestCorrectTool(Player player, ItemStack old, BlockState blockState) {
-        LazyOptional<ICuriosItemHandler> optional = CuriosApi.getCuriosInventory(player);
+        Optional<ICuriosItemHandler> optional = CuriosApi.getCuriosInventory(player).resolve();
         float oldSpeed = old.getDestroySpeed(blockState);
         if (optional.isPresent()) {
-            ICuriosItemHandler itemHandler = optional.orElse(null);
+            ICuriosItemHandler itemHandler = optional.get();
             List<SlotResult> list = itemHandler.findCurios(DRItems.YEARS_AMBER.get());
             if (!list.isEmpty()) {
                 SlotResult amberItem = list.get(0);
