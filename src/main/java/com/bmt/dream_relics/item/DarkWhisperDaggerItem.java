@@ -25,7 +25,7 @@ public class DarkWhisperDaggerItem extends SwordItem implements ICurioItem {
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
 
-        if (tooltipKey != null && !tooltipKey.isEmpty()) {
+        if (!tooltipKey.isEmpty()) {
             tooltip.add(Component.translatable(tooltipKey).withStyle(ChatFormatting.GRAY));
         }
     }

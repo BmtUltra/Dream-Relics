@@ -33,18 +33,6 @@ public class SoulMirrorItem extends DreamRelicItem {
 
     @Override
     public void appendHoverText(@NotNull ItemStack itemStack, @Nullable Level level, @NotNull List<Component> list, @NotNull TooltipFlag tooltipFlag) {
-        if (level != null && level.isClientSide()) {
-            Player player = net.minecraft.client.Minecraft.getInstance().player;
-            if (player != null && player.getCooldowns().isOnCooldown(this)) {
-                float cooldownPercent = player.getCooldowns().getCooldownPercent(this, 0.0F);
-                int remainingTicks = (int) (cooldownPercent * MainConfig.cooldownTime);
-                int remainingSeconds = (int) Math.ceil(remainingTicks / 20.0);
-                if (remainingSeconds > 0) {
-                    list.add(Component.translatable("item.dream_relics.soul_mirror.cooldown", remainingSeconds)
-                            .withStyle(ChatFormatting.GOLD));
-                }
-            }
-        }
         list.add(Component.translatable("tooltip.dream_relics.soul_mirror").withStyle(ChatFormatting.GRAY));
     }
 

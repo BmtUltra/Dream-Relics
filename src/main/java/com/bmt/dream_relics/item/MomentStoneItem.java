@@ -66,18 +66,5 @@ public class MomentStoneItem extends Item {
 
         tooltip.add(Component.translatable("tooltip.dream_relics.moment_stone")
                 .withStyle(ChatFormatting.GRAY));
-
-        if (level != null && level.isClientSide) {
-            Player player = net.minecraft.client.Minecraft.getInstance().player;
-            if (player != null && player.getCooldowns().isOnCooldown(this)) {
-                float cooldownPercent = player.getCooldowns().getCooldownPercent(this, 0.0F);
-                int remainingTicks = (int) (cooldownPercent * COOLDOWN_TICKS);
-                int remainingSeconds = (int) Math.ceil(remainingTicks / 20.0);
-                if (remainingSeconds > 0) {
-                    tooltip.add(Component.translatable("item.dream_relics.moment_stone.cooldown", remainingSeconds)
-                            .withStyle(ChatFormatting.BLUE));
-                }
-            }
-        }
     }
 }

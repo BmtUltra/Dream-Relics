@@ -1,5 +1,6 @@
 package com.bmt.dream_relics.client.event;
 
+import com.bmt.dream_relics.DreamRelics;
 import com.bmt.dream_relics.init.DRItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -7,6 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,12 +18,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("all")
-@Mod.EventBusSubscriber(Dist.CLIENT)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = DreamRelics.MODID)
 public class GlowEffectHandler {
     private static final int RANGE = 16;
     private static final Set<LivingEntity> glowingEntities = new HashSet<>();
     private static boolean effectActive = false;
 
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) {

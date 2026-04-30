@@ -2,7 +2,6 @@
   "required": true,
   "package": "com.bmt.dream_relics.mixins",
   "compatibilityLevel": "JAVA_17",
-  "plugin": "com.bmt.dream_relics.mixins.MainMixinPlugin",
   "refmap": "dream_relics.mixins.refmap.json",
   "mixins": [
     "curios.CurioInventoryWrapperMixin",

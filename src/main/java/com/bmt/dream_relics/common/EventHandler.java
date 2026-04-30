@@ -386,9 +386,7 @@ public class EventHandler {
                 List<? extends Player> players = player.level().players();
                 for (Player otherPlayer : players) {
                     if (player.distanceToSqr(otherPlayer) <= 25) {
-                        player.getCapability(DRCapabilities.SERVER_SIDE_PLAYER_DATA).ifPresent(playerData -> {
-
-                        });
+                        player.getCapability(DRCapabilities.SERVER_SIDE_PLAYER_DATA).ifPresent(playerData -> {});
                     }
                 }
             }
