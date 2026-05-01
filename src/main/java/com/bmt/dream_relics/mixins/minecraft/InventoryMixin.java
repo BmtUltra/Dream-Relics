@@ -1,5 +1,6 @@
 package com.bmt.dream_relics.mixins.minecraft;
 
+import com.bmt.dream_relics.init.DRItems;
 import com.bmt.dream_relics.item.YearsAmber;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
@@ -14,6 +15,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import top.theillusivec4.curios.api.CuriosApi;
 
 @Mixin(Inventory.class)
 public class InventoryMixin {
@@ -30,9 +32,15 @@ public class InventoryMixin {
 
     @Inject(method = "getDestroySpeed", at = @At("HEAD"), cancellable = true)
     private void getDestroySpeed(BlockState blockState, CallbackInfoReturnable<Float> cir) {
-        @Nullable Pair<Float, ItemStack> pair = YearsAmber.findBestCorrectTool(player, this.items.get(this.selected), blockState);
-        if (pair != null) {
-            cir.setReturnValue(pair.getFirst());
+        boolean hasYearsAmber = CuriosApi.getCuriosInventory(player)
+                .map(handler -> handler.isEquipped(DRItems.YEARS_AMBER.get()))
+                .orElse(false);
+
+        if (hasYearsAmber) {
+            @Nullable Pair<Float, ItemStack> pair = YearsAmber.findBestCorrectTool(player, this.items.get(this.selected), blockState);
+            if (pair != null) {
+                cir.setReturnValue(pair.getFirst());
+            }
         }
     }
 }

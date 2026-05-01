@@ -441,7 +441,7 @@ java.lang.IllegalAccessException: class io.netty.util.internal.PlatformDependent
 [034月2026 22:22:27.745] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.bmt.dream_relics.client.ClientEventHandler$ModEventHandler to MOD
 [034月2026 22:22:27.751] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.bmt.dream_relics.common.EventHandler$ForgeEventHandler to FORGE
 [034月2026 22:22:27.794] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.bmt.dream_relics.common.EventHandler$ModEventHandler to MOD
-[034月2026 22:22:27.797] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.bmt.dream_relics.config.MainConfig to MOD
+[034月2026 22:22:27.797] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.bmt.dream_relics.config.CommonConfig to MOD
 [034月2026 22:22:27.797] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.bmt.dream_relics.datagen.Main to MOD
 [034月2026 22:22:27.800] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Auto-subscribing com.bmt.dream_relics.item.SoulMirrorItem to FORGE
 [034月2026 22:22:27.806] [modloading-worker-0/DEBUG] [net.minecraftforge.fml.javafmlmod.AutomaticEventSubscriber/LOADING]: Attempting to inject @EventBusSubscriber classes into the eventbus for forge

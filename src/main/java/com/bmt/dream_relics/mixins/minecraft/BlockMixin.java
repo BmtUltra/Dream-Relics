@@ -1,5 +1,6 @@
 package com.bmt.dream_relics.mixins.minecraft;
 
+import com.bmt.dream_relics.init.DRItems;
 import com.bmt.dream_relics.item.YearsAmber;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
@@ -18,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.List;
 
@@ -26,9 +28,15 @@ public class BlockMixin {
     @Inject(method = "getDrops(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BlockEntity;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getDrops(Lnet/minecraft/world/level/storage/loot/LootParams$Builder;)Ljava/util/List;"), locals = LocalCapture.CAPTURE_FAILSOFT)
     private static void getDrops(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, BlockEntity blockEntity, Entity entity, ItemStack tool, CallbackInfoReturnable<List<ItemStack>> cir, LootParams.Builder builder) {
         if (entity instanceof Player player && tool != null) {
-            @Nullable Pair<Float, ItemStack> pair = YearsAmber.findBestCorrectTool(player, tool, blockState);
-            if (pair != null) {
-                builder.withParameter(LootContextParams.TOOL, pair.getSecond());
+            boolean hasYearsAmber = CuriosApi.getCuriosInventory(player)
+                    .map(handler -> handler.isEquipped(DRItems.YEARS_AMBER.get()))
+                    .orElse(false);
+
+            if (hasYearsAmber) {
+                @Nullable Pair<Float, ItemStack> pair = YearsAmber.findBestCorrectTool(player, tool, blockState);
+                if (pair != null) {
+                    builder.withParameter(LootContextParams.TOOL, pair.getSecond());
+                }
             }
         }
     }

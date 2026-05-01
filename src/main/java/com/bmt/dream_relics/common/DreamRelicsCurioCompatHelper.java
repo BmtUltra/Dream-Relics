@@ -1,4 +1,4 @@
-package com.bmt.dream_relics.common.capabilities;
+package com.bmt.dream_relics.common;
 
 import com.bmt.dream_relics.item.MemoryStardustItem;
 import net.minecraft.core.NonNullList;

@@ -118,8 +118,12 @@ public class MemoryStardustItem extends DreamRelicItem {
         ItemStack clickItem = slot.getItem();
         if (clickItem.isEmpty()) {
             removeOne(stardust).ifPresent(stack -> {
-                playRemoveOneSound(player);
-                slot.safeInsert(stack);
+                if (slot.mayPlace(stack)) {
+                    playRemoveOneSound(player);
+                    slot.safeInsert(stack);
+                } else {
+                    add(stardust, stack);
+                }
             });
             return true;
         } else if (canAdd(clickItem)) {

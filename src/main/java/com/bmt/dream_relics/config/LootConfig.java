@@ -2,12 +2,10 @@ package com.bmt.dream_relics.config;
 
 import com.bmt.dream_relics.DreamRelics;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 @Mod.EventBusSubscriber(modid = DreamRelics.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class MainConfig {
+public class LootConfig {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
     public static final ForgeConfigSpec.DoubleValue ASTRAL_NECKLACE_CHANCE;
@@ -86,22 +84,9 @@ public class MainConfig {
     public static final ForgeConfigSpec.IntValue RARE_GOLD_BRACELET_MIN_COUNT;
     public static final ForgeConfigSpec.IntValue RARE_GOLD_BRACELET_MAX_COUNT;
 
-    public static final ForgeConfigSpec.IntValue CHARGE_TIME = BUILDER
-            .comment(
-                    "Charge time in ticks for Soul Mirror (20 ticks = 1 second)",
-                    "灵魂之镜的充能时间（单位：tick，20 tick = 1 秒）"
-            )
-            .defineInRange("chargeTime", 40, 1, 200);
-
-    public static final ForgeConfigSpec.IntValue COOLDOWN_TIME = BUILDER
-            .comment(
-                    "Cooldown time in ticks for Soul Mirror (20 ticks = 1 second)",
-                    "灵魂之镜的冷却时间（单位：tick，20 tick = 1 秒）"
-            )
-            .defineInRange("cooldownTime", 4800, 1, 36000);
-
     static {
         BUILDER.push("Loot Settings");
+
         BUILDER.push("Astral Necklace Settings");
         ASTRAL_NECKLACE_CHANCE = BUILDER
                 .comment(
@@ -630,167 +615,5 @@ public class MainConfig {
         BUILDER.pop();
     }
 
-
     public static final ForgeConfigSpec SPEC = BUILDER.build();
-
-    public static int chargeTime;
-    public static int cooldownTime;
-
-    public static double astralNecklaceChance;
-    public static int astralNecklaceMinCount;
-    public static int astralNecklaceMaxCount;
-    public static double dreamTotemChance;
-    public static int dreamTotemMinCount;
-    public static int dreamTotemMaxCount;
-    public static double oceanBlessingBuriedChance;
-    public static int oceanBlessingBuriedMinCount;
-    public static int oceanBlessingBuriedMaxCount;
-    public static double darkWhisperRingChance;
-    public static int darkWhisperRingMinCount;
-    public static int darkWhisperRingMaxCount;
-    public static double voidNecklaceChance;
-    public static int voidNecklaceMinCount;
-    public static int voidNecklaceMaxCount;
-    public static double mistVeilRingChance;
-    public static int mistVeilRingMinCount;
-    public static int mistVeilRingMaxCount;
-    public static double echoEarringChance;
-    public static int echoEarringMinCount;
-    public static int echoEarringMaxCount;
-    public static double pastRingChance;
-    public static int pastRingMinCount;
-    public static int pastRingMaxCount;
-    public static double memoryNecklaceChance;
-    public static int memoryNecklaceMinCount;
-    public static int memoryNecklaceMaxCount;
-    public static double momentStoneChance;
-    public static int momentStoneMinCount;
-    public static int momentStoneMaxCount;
-    public static double heartVoicePendantChance;
-    public static int heartVoicePendantMinCount;
-    public static int heartVoicePendantMaxCount;
-    public static double memoryStardustChance;
-    public static int memoryStardustMinCount;
-    public static int memoryStardustMaxCount;
-    public static double timeHourglassChance;
-    public static int timeHourglassMinCount;
-    public static int timeHourglassMaxCount;
-    public static double tasselRingChance;
-    public static int tasselRingMinCount;
-    public static int tasselRingMaxCount;
-    public static double observeSelfEyeChance;
-    public static int observeSelfEyeMinCount;
-    public static int observeSelfEyeMaxCount;
-    public static double royalCrownChance;
-    public static int royalCrownMinCount;
-    public static int royalCrownMaxCount;
-    public static double pureHolyGrailChance;
-    public static int pureHolyGrailMinCount;
-    public static int pureHolyGrailMaxCount;
-    public static double elvenBootsChance;
-    public static int elvenBootsMinCount;
-    public static int elvenBootsMaxCount;
-    public static double dreamBalanceChance;
-    public static int dreamBalanceMinCount;
-    public static int dreamBalanceMaxCount;
-    public static double yearsAmberChance;
-    public static int yearsAmberMinCount;
-    public static int yearsAmberMaxCount;
-    public static double icarusWingsChance;
-    public static int icarusWingsMinCount;
-    public static int icarusWingsMaxCount;
-    public static double endlessDreamChance;
-    public static int endlessDreamMinCount;
-    public static int endlessDreamMaxCount;
-    public static double awakenDreamBraceletChance;
-    public static int awakenDreamBraceletMinCount;
-    public static int awakenDreamBraceletMaxCount;
-    public static double royalLensChance;
-    public static int royalLensMinCount;
-    public static int royalLensMaxCount;
-    public static double rareGoldBraceletChance;
-    public static int rareGoldBraceletMinCount;
-    public static int rareGoldBraceletMaxCount;
-
-    @SubscribeEvent
-    static void onLoad(final ModConfigEvent event) {
-        chargeTime = CHARGE_TIME.get();
-        cooldownTime = COOLDOWN_TIME.get();
-
-        astralNecklaceChance = ASTRAL_NECKLACE_CHANCE.get();
-        astralNecklaceMinCount = ASTRAL_NECKLACE_MIN_COUNT.get();
-        astralNecklaceMaxCount = ASTRAL_NECKLACE_MAX_COUNT.get();
-        dreamTotemChance = DREAM_TOTEM_CHANCE.get();
-        dreamTotemMinCount = DREAM_TOTEM_MIN_COUNT.get();
-        dreamTotemMaxCount = DREAM_TOTEM_MAX_COUNT.get();
-        oceanBlessingBuriedChance = OCEAN_CURRENT_BLESSING_CHANCE.get();
-        oceanBlessingBuriedMinCount = OCEAN_CURRENT_BLESSING_MIN_COUNT.get();
-        oceanBlessingBuriedMaxCount = OCEAN_CURRENT_BLESSING_MAX_COUNT.get();
-        darkWhisperRingChance = DARK_WHISPER_RING_CHANCE.get();
-        darkWhisperRingMinCount = DARK_WHISPER_RING_MIN_COUNT.get();
-        darkWhisperRingMaxCount = DARK_WHISPER_RING_MAX_COUNT.get();
-        voidNecklaceChance = VOID_NECKLACE_CHANCE.get();
-        voidNecklaceMinCount = VOID_NECKLACE_MIN_COUNT.get();
-        voidNecklaceMaxCount = VOID_NECKLACE_MAX_COUNT.get();
-        mistVeilRingChance = MIST_VEIL_RING_CHANCE.get();
-        mistVeilRingMinCount = MIST_VEIL_RING_MIN_COUNT.get();
-        mistVeilRingMaxCount = MIST_VEIL_RING_MAX_COUNT.get();
-        echoEarringChance = ECHO_EARRING_CHANCE.get();
-        echoEarringMinCount = ECHO_EARRING_MIN_COUNT.get();
-        echoEarringMaxCount = ECHO_EARRING_MAX_COUNT.get();
-        pastRingChance = PAST_RING_CHANCE.get();
-        pastRingMinCount = PAST_RING_MIN_COUNT.get();
-        pastRingMaxCount = PAST_RING_MAX_COUNT.get();
-        memoryNecklaceChance = MEMORY_NECKLACE_CHANCE.get();
-        memoryNecklaceMinCount = MEMORY_NECKLACE_MIN_COUNT.get();
-        memoryNecklaceMaxCount = MEMORY_NECKLACE_MAX_COUNT.get();
-        momentStoneChance = MOMENT_STONE_CHANCE.get();
-        momentStoneMinCount = MOMENT_STONE_MIN_COUNT.get();
-        momentStoneMaxCount = MOMENT_STONE_MAX_COUNT.get();
-        heartVoicePendantChance = HEART_VOICE_PENDANT_CHANCE.get();
-        heartVoicePendantMinCount = HEART_VOICE_PENDANT_MIN_COUNT.get();
-        heartVoicePendantMaxCount = HEART_VOICE_PENDANT_MAX_COUNT.get();
-        memoryStardustChance = MEMORY_STARDUST_CHANCE.get();
-        memoryStardustMinCount = MEMORY_STARDUST_MIN_COUNT.get();
-        memoryStardustMaxCount = MEMORY_STARDUST_MAX_COUNT.get();
-        timeHourglassChance = TIME_HOURGLASS_CHANCE.get();
-        timeHourglassMinCount = TIME_HOURGLASS_MIN_COUNT.get();
-        timeHourglassMaxCount = TIME_HOURGLASS_MAX_COUNT.get();
-        tasselRingChance = TASSEL_RING_CHANCE.get();
-        tasselRingMinCount = TASSEL_RING_MIN_COUNT.get();
-        tasselRingMaxCount = TASSEL_RING_MAX_COUNT.get();
-        observeSelfEyeChance = OBSERVE_SELF_EYE_CHANCE.get();
-        observeSelfEyeMinCount = OBSERVE_SELF_EYE_MIN_COUNT.get();
-        observeSelfEyeMaxCount = OBSERVE_SELF_EYE_MAX_COUNT.get();
-        royalCrownChance = ROYAL_CROWN_CHANCE.get();
-        royalCrownMinCount = ROYAL_CROWN_MIN_COUNT.get();
-        royalCrownMaxCount = ROYAL_CROWN_MAX_COUNT.get();
-        pureHolyGrailChance = PURE_HOLY_GRAIL_CHANCE.get();
-        pureHolyGrailMinCount = PURE_HOLY_GRAIL_MIN_COUNT.get();
-        pureHolyGrailMaxCount = PURE_HOLY_GRAIL_MAX_COUNT.get();
-        elvenBootsChance = ELVEN_BOOTS_CHANCE.get();
-        elvenBootsMinCount = ELVEN_BOOTS_MIN_COUNT.get();
-        elvenBootsMaxCount = ELVEN_BOOTS_MAX_COUNT.get();
-        dreamBalanceChance = DREAM_BALANCE_CHANCE.get();
-        dreamBalanceMinCount = DREAM_BALANCE_MIN_COUNT.get();
-        dreamBalanceMaxCount = DREAM_BALANCE_MAX_COUNT.get();
-        yearsAmberChance = YEARS_AMBER_CHANCE.get();
-        yearsAmberMinCount = YEARS_AMBER_MIN_COUNT.get();
-        yearsAmberMaxCount = YEARS_AMBER_MAX_COUNT.get();
-        icarusWingsChance = ICARUS_WINGS_CHANCE.get();
-        icarusWingsMinCount = ICARUS_WINGS_MIN_COUNT.get();
-        icarusWingsMaxCount = ICARUS_WINGS_MAX_COUNT.get();
-        endlessDreamChance = ENDLESS_DREAM_CHANCE.get();
-        endlessDreamMinCount = ENDLESS_DREAM_MIN_COUNT.get();
-        endlessDreamMaxCount = ENDLESS_DREAM_MAX_COUNT.get();
-        awakenDreamBraceletChance = AWAKEN_DREAM_BRACELET_CHANCE.get();
-        awakenDreamBraceletMinCount = AWAKEN_DREAM_BRACELET_MIN_COUNT.get();
-        awakenDreamBraceletMaxCount = AWAKEN_DREAM_BRACELET_MAX_COUNT.get();
-        royalLensChance = ROYAL_LENS_CHANCE.get();
-        royalLensMinCount = ROYAL_LENS_MIN_COUNT.get();
-        royalLensMaxCount = ROYAL_LENS_MAX_COUNT.get();
-        rareGoldBraceletChance = RARE_GOLD_BRACELET_CHANCE.get();
-        rareGoldBraceletMinCount = RARE_GOLD_BRACELET_MIN_COUNT.get();
-        rareGoldBraceletMaxCount = RARE_GOLD_BRACELET_MAX_COUNT.get();
-    }
 }

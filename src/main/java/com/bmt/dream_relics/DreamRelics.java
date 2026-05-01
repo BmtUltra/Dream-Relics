@@ -1,6 +1,7 @@
 package com.bmt.dream_relics;
 
-import com.bmt.dream_relics.config.MainConfig;
+import com.bmt.dream_relics.config.CommonConfig;
+import com.bmt.dream_relics.config.LootConfig;
 import com.bmt.dream_relics.init.DRCreativeTabs;
 import com.bmt.dream_relics.init.DRItems;
 import net.minecraft.resources.ResourceLocation;
@@ -16,12 +17,11 @@ public class DreamRelics {
 
     public DreamRelics(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
-
         DRItems.ITEMS.register(modEventBus);
         DRCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
-
         MinecraftForge.EVENT_BUS.register(this);
-        context.registerConfig(ModConfig.Type.COMMON, MainConfig.SPEC);
+        context.registerConfig(ModConfig.Type.COMMON, CommonConfig.SPEC,"dream_relics/dream_relics-common.toml");
+        context.registerConfig(ModConfig.Type.COMMON, LootConfig.SPEC, "dream_relics/dream_relics-loot.toml");
     }
 
     public static ResourceLocation id(String s) {

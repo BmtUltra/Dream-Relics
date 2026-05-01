@@ -2,7 +2,7 @@ package com.bmt.dream_relics.item;
 
 import com.bmt.dream_relics.DreamRelics;
 import com.bmt.dream_relics.client.DRClient;
-import com.bmt.dream_relics.config.MainConfig;
+import com.bmt.dream_relics.config.CommonConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -40,7 +40,7 @@ public class SoulMirrorItem extends DreamRelicItem {
             Player player = DRClient.getLocalPlayer();
             if (player != null && player.getCooldowns().isOnCooldown(this)) {
                 float cooldownPercent = player.getCooldowns().getCooldownPercent(this, 0.0F);
-                int remainingTicks = (int) (cooldownPercent * MainConfig.cooldownTime);
+                int remainingTicks = (int) (cooldownPercent * CommonConfig.cooldownTime);
                 int remainingSeconds = (int) Math.ceil(remainingTicks / 20.0);
                 if (remainingSeconds > 0) {
                     list.add(Component.translatable("item.dream_relics.soul_mirror.cooldown", remainingSeconds)
@@ -97,7 +97,7 @@ public class SoulMirrorItem extends DreamRelicItem {
                 } else {
                     teleportToDeathPoint(player);
                 }
-                player.getCooldowns().addCooldown(this, MainConfig.cooldownTime);
+                player.getCooldowns().addCooldown(this, CommonConfig.cooldownTime);
             }
         }
         return stack;
@@ -162,7 +162,7 @@ public class SoulMirrorItem extends DreamRelicItem {
 
     @Override
     public int getUseDuration(@NotNull ItemStack stack) {
-        return MainConfig.chargeTime;
+        return CommonConfig.chargeTime;
     }
 
     @Override

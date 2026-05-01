@@ -1,4 +1,4 @@
-package com.bmt.dream_relics.common.capabilities;
+package com.bmt.dream_relics.common;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;

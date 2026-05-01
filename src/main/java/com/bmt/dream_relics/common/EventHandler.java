@@ -2,19 +2,15 @@ package com.bmt.dream_relics.common;
 
 import com.bmt.dream_relics.DreamRelics;
 import com.bmt.dream_relics.common.capabilities.PlayerData;
-import com.bmt.dream_relics.common.capabilities.YearsAmberItemHandler;
 import com.bmt.dream_relics.item.*;
 import com.bmt.dream_relics.init.DRCapabilities;
 import com.bmt.dream_relics.init.DRItems;
-import com.bmt.dream_relics.util.DRUtil;
 import com.bmt.dream_relics.util.FlowStateManager;
 import com.bmt.dream_relics.util.MuteStateManager;
 import com.bmt.dream_relics.util.SleepStateManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
@@ -34,30 +30,24 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.SlotResult;
 
 import java.util.List;
 
 public class EventHandler {
     @Mod.EventBusSubscriber(modid = DreamRelics.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
     public static class ForgeEventHandler {
-        @SubscribeEvent
-        public static void PlayerXpEvent(PlayerXpEvent.PickupXp event) {
-            if (DRUtil.isEquippedNightmareBook(event.getEntity())) {
-                event.getOrb().value = (int) (0.5 * event.getOrb().value);
-            }
-        }
 
         @SubscribeEvent
         public static void HarvestCheck(PlayerEvent.HarvestCheck event) {
             if (!event.canHarvest()) {
-                if (YearsAmber.findBestCorrectTool(event.getEntity(), event.getEntity().getMainHandItem(), event.getTargetBlock()) != null) {
+                boolean hasYearsAmber = CuriosApi.getCuriosInventory(event.getEntity())
+                        .map(handler -> handler.isEquipped(DRItems.YEARS_AMBER.get()))
+                        .orElse(false);
+                if (hasYearsAmber && YearsAmber.findBestCorrectTool(event.getEntity(), event.getEntity().getMainHandItem(), event.getTargetBlock()) != null) {
                     event.setCanHarvest(true);
                 }
             }
@@ -93,14 +83,6 @@ public class EventHandler {
                 if (hasDagger) {
                     MuteStateManager.setMuted(event.getEntity());
                 }
-            }
-
-            if (event.getSource().getEntity() instanceof Player player) {
-                CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
-                    if (iCuriosItemHandler.isEquipped(DRItems.NIGHTMARE_BOOK.get())) {
-                        event.setAmount(event.getAmount() * 0.5F);
-                    }
-                });
             }
 
             if (event.getEntity() instanceof Player player) {
@@ -326,32 +308,7 @@ public class EventHandler {
         }
 
         @SubscribeEvent
-        public static void MobEffectEvent$Add(MobEffectEvent.Added event) {
-            if (event.getEntity() instanceof Player player) {
-                CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
-                    if (iCuriosItemHandler.isEquipped(DRItems.NIGHTMARE_BOOK.get())) {
-                        @NotNull MobEffectInstance effectInstance = event.getEffectInstance();
-                        effectInstance.update(new MobEffectInstance(
-                                effectInstance.getEffect(),
-                                effectInstance.getDuration() * 2,
-                                effectInstance.getAmplifier(),
-                                effectInstance.isAmbient(),
-                                effectInstance.isVisible(),
-                                effectInstance.showIcon()
-                        ));
-                    }
-                });
-            }
-        }
-
-        @SubscribeEvent
         public static void AnvilUpdateEvent(AnvilUpdateEvent event) {
-            Player player = event.getPlayer();
-
-            if (DRUtil.isEquippedNightmareBook(player)) {
-                event.setCost(event.getCost() * 2);
-            }
-
             ItemStack leftItem = event.getLeft();
             ItemStack rightItem = event.getRight();
 
@@ -361,12 +318,12 @@ public class EventHandler {
                     boolean modified = false;
 
                     if (FlawlessGem.hasNegativeEnchantments(result)) {
-                        result = FlawlessGem.removeNegativeEnchantments(result);
+                        FlawlessGem.removeNegativeEnchantments(result);
                         modified = true;
                     }
 
                     if (FlawlessGem.needsRepair(result)) {
-                        result = FlawlessGem.repairItem(result);
+                        FlawlessGem.repairItem(result);
                         modified = true;
                     }
 
@@ -408,14 +365,6 @@ public class EventHandler {
                     }
                 }
             });
-        }
-
-        @SubscribeEvent
-        public static void AttachItemStackCapabilitiesEvent(AttachCapabilitiesEvent<ItemStack> event) {
-            ItemStack itemStack = event.getObject();
-            if (itemStack.is(DRItems.YEARS_AMBER.get())) {
-                event.addCapability(DreamRelics.id("years_amber_item_handler"), new YearsAmberItemHandler(4));
-            }
         }
 
         @SubscribeEvent
@@ -466,7 +415,7 @@ public class EventHandler {
             LivingEntity target = event.getNewTarget();
 
             if (target instanceof Player player) {
-                if (isUndeadMob(event.getEntity())) {
+                if (event.getEntity().getMobType() == net.minecraft.world.entity.MobType.UNDEAD) {
                     CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
                         if (iCuriosItemHandler.isEquipped(DRItems.DARK_WHISPER_RING.get())) {
                             event.setCanceled(true);
@@ -474,18 +423,6 @@ public class EventHandler {
                     });
                 }
             }
-        }
-
-        private static boolean isUndeadMob(LivingEntity entity) {
-            return entity instanceof Zombie ||
-                    entity instanceof Skeleton ||
-                    entity instanceof WitherSkeleton ||
-                    entity instanceof Stray ||
-                    entity instanceof Husk ||
-                    entity instanceof Drowned ||
-                    entity instanceof ZombifiedPiglin ||
-                    entity instanceof Phantom ||
-                    entity instanceof WitherBoss;
         }
 
         @SubscribeEvent
@@ -579,7 +516,6 @@ public class EventHandler {
     public static class ModEventHandler {
         @SubscribeEvent
         public static void RegisterCapabilitiesEvent(RegisterCapabilitiesEvent event) {
-            event.register(YearsAmberItemHandler.class);
             event.register(PlayerData.class);
         }
     }

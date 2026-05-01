@@ -1,7 +1,7 @@
 package com.bmt.dream_relics.mixins.curios;
 
-import com.bmt.dream_relics.common.capabilities.CombinedEquippedCuriosHandler;
-import com.bmt.dream_relics.common.capabilities.DreamRelicsCurioCompatHelper;
+import com.bmt.dream_relics.common.CombinedEquippedCuriosHandler;
+import com.bmt.dream_relics.common.DreamRelicsCurioCompatHelper;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
