@@ -51,7 +51,7 @@ public class DRItems {
     public static final RegistryObject<Item> MIST_VEIL_RING = ITEMS.register("mist_veil_ring",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.mist_veil_ring"));
     public static final RegistryObject<Item> NIGHTMARE_BOOK = ITEMS.register("nightmare_book",
-            () -> new NightmareBook(new Item.Properties()));
+            () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.nightmare_book"));
     public static final RegistryObject<Item> VOID_NECKLACE = ITEMS.register("void_necklace",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.void_necklace"));
     public static final RegistryObject<Item> DARK_WHISPER_RING = ITEMS.register("dark_whisper_ring",

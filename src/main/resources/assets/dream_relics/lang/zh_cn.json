@@ -61,6 +61,7 @@
   "tooltip.dream_relics.moment_stone": "§7对方块使用可以加快其时间流逝",
   "item.dream_relics.moment_stone.cooldown": "冷却时间：%s秒",
   "tooltip.dream_relics.liminal_key": "§7对物品使用可以转移附魔",
+  "tooltip.dream_relics.nightmare_book": "§7驱使幻翼攻击目标",
   "tooltip.dream_relics.memory_stardust": "§7可以存储饰品，佩戴时里面的饰品均生效",
   "tooltip.dream_relics.observe_self_eye": "§7注视附近的生物，使其轮廓显现",
   "tooltip.dream_relics.astral_necklace": "§7造成伤害无视目标一定护甲值",

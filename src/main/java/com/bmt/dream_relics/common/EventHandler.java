@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.EntityBlock;
@@ -410,8 +411,17 @@ public class EventHandler {
 
         @SubscribeEvent
         public static void onLivingSetTarget(LivingChangeTargetEvent event) {
+            if (event.getEntity() instanceof Phantom) {
+                LivingEntity newTarget = event.getNewTarget();
+                if (newTarget instanceof Player player) {
+                    CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
+                        if (iCuriosItemHandler.isEquipped(DRItems.NIGHTMARE_BOOK.get())) {
+                            event.setCanceled(true);
+                        }
+                    });
+                }
+            }
             LivingEntity target = event.getNewTarget();
-
             if (target instanceof Player player) {
                 if (event.getEntity().getMobType() == net.minecraft.world.entity.MobType.UNDEAD) {
                     CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
@@ -421,6 +431,31 @@ public class EventHandler {
                     });
                 }
             }
+        }
+
+        @SubscribeEvent
+        public static void onPlayerAttack(net.minecraftforge.event.entity.player.AttackEntityEvent event) {
+            Player player = event.getEntity();
+
+            if (!(event.getTarget() instanceof LivingEntity livingTarget)) {
+                return;
+            }
+
+            CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
+                if (iCuriosItemHandler.isEquipped(DRItems.NIGHTMARE_BOOK.get())) {
+                    List<Phantom> nearbyPhantoms = player.level().getEntitiesOfClass(
+                            Phantom.class,
+                            player.getBoundingBox().inflate(32.0D),
+                            phantom -> phantom.isAlive() && !phantom.is(event.getTarget())
+                    );
+
+                    for (Phantom phantom : nearbyPhantoms) {
+                        if (phantom.getTarget() == null || phantom.getTarget() == player) {
+                            phantom.setTarget(livingTarget);
+                        }
+                    }
+                }
+            });
         }
 
         @SubscribeEvent

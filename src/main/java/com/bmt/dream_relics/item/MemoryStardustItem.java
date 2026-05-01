@@ -1,5 +1,6 @@
 package com.bmt.dream_relics.item;
 
+import com.bmt.dream_relics.util.DRUtil;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
@@ -68,6 +69,9 @@ public class MemoryStardustItem extends DreamRelicItem {
 
     public static boolean canAdd(ItemStack relic) {
         if (relic.isEmpty()) {
+            return false;
+        }
+        if (relic.is(DRUtil.Items.CANT_STORED_IN_MEMORY_STARDUST)) {
             return false;
         }
         return CuriosApi.getCurio(relic).isPresent();
@@ -141,8 +145,7 @@ public class MemoryStardustItem extends DreamRelicItem {
     }
 
     @Override
-    public boolean overrideOtherStackedOnMe(ItemStack stardust, ItemStack other, Slot slot, ClickAction action,
-                                            Player player, SlotAccess access) {
+    public boolean overrideOtherStackedOnMe(ItemStack stardust, ItemStack other, Slot slot, ClickAction action, Player player, SlotAccess access) {
         if (stardust.getCount() != 1) {
             return false;
         }
