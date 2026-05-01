@@ -4,6 +4,8 @@ import com.bmt.dream_relics.config.CommonConfig;
 import com.bmt.dream_relics.config.LootConfig;
 import com.bmt.dream_relics.init.DRCreativeTabs;
 import com.bmt.dream_relics.init.DRItems;
+import com.bmt.dream_relics.init.DRLootConditions;
+import com.bmt.dream_relics.init.DRLootFunctions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -19,6 +21,8 @@ public class DreamRelics {
         IEventBus modEventBus = context.getModEventBus();
         DRItems.ITEMS.register(modEventBus);
         DRCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
+        DRLootConditions.register(modEventBus);
+        DRLootFunctions.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         context.registerConfig(ModConfig.Type.COMMON, CommonConfig.SPEC,"dream_relics/dream_relics-common.toml");
         context.registerConfig(ModConfig.Type.COMMON, LootConfig.SPEC, "dream_relics/dream_relics-loot.toml");

@@ -83,6 +83,9 @@ public class LootConfig {
     public static final ForgeConfigSpec.DoubleValue RARE_GOLD_BRACELET_CHANCE;
     public static final ForgeConfigSpec.IntValue RARE_GOLD_BRACELET_MIN_COUNT;
     public static final ForgeConfigSpec.IntValue RARE_GOLD_BRACELET_MAX_COUNT;
+    public static final ForgeConfigSpec.DoubleValue NIGHTMARE_BOOK_CHANCE;
+    public static final ForgeConfigSpec.IntValue NIGHTMARE_BOOK_MIN_COUNT;
+    public static final ForgeConfigSpec.IntValue NIGHTMARE_BOOK_MAX_COUNT;
 
     static {
         BUILDER.push("Loot Settings");
@@ -610,6 +613,27 @@ public class LootConfig {
                         "星辰手镯的最大生成数量"
                 )
                 .defineInRange("rareGoldBraceletMaxCount", 1, 1, 64);
+        BUILDER.pop();
+
+        BUILDER.push("Nightmare Book Settings");
+        NIGHTMARE_BOOK_CHANCE = BUILDER
+                .comment(
+                        "Spawn chance for Nightmare Book in stronghold library chests (0.0 - 1.0)",
+                        "要塞图书馆箱子中噩梦之书的生成几率（0.0 - 1.0）"
+                )
+                .defineInRange("NightmareBookChance", 0.05, 0.0, 1.0);
+        NIGHTMARE_BOOK_MIN_COUNT = BUILDER
+                .comment(
+                        "Spawn count for Nightmare Book",
+                        "噩梦之书的最小生成数量"
+                )
+                .defineInRange("NightmareBookMinCount", 1, 1, 64);
+        NIGHTMARE_BOOK_MAX_COUNT = BUILDER
+                .comment(
+                        "Spawn count for Nightmare Book",
+                        "噩梦之书的最大生成数量"
+                )
+                .defineInRange("NightmareBookMaxCount", 1, 1, 64);
         BUILDER.pop();
 
         BUILDER.pop();

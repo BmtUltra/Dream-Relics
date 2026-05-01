@@ -1,0 +1,44 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "dream_relics:endless_dream",
+          "weight": 1,
+          "conditions": [
+            {
+              "condition": "dream_relics:config_value_chance",
+              "config": "endless_dream"
+            }
+          ],
+          "functions": [
+            {
+              "function": "dream_relics:set_count_from_config",
+              "config": "endless_dream"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "dream_relics:awaken_dream_bracelet",
+          "weight": 1,
+          "conditions": [
+            {
+              "condition": "dream_relics:config_value_chance",
+              "config": "awaken_dream_bracelet"
+            }
+          ],
+          "functions": [
+            {
+              "function": "dream_relics:set_count_from_config",
+              "config": "awaken_dream_bracelet"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

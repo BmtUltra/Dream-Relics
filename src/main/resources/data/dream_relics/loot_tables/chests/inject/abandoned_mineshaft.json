@@ -1,0 +1,44 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "dream_relics:observe_self_eye",
+          "weight": 1,
+          "conditions": [
+            {
+              "condition": "dream_relics:config_value_chance",
+              "config": "observe_self_eye"
+            }
+          ],
+          "functions": [
+            {
+              "function": "dream_relics:set_count_from_config",
+              "config": "observe_self_eye"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "dream_relics:royal_crown",
+          "weight": 1,
+          "conditions": [
+            {
+              "condition": "dream_relics:config_value_chance",
+              "config": "royal_crown"
+            }
+          ],
+          "functions": [
+            {
+              "function": "dream_relics:set_count_from_config",
+              "config": "royal_crown"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
