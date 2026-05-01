@@ -2,6 +2,7 @@ package com.bmt.dream_relics.common;
 
 import com.bmt.dream_relics.DreamRelics;
 import com.bmt.dream_relics.common.capabilities.PlayerData;
+import com.bmt.dream_relics.config.CommonConfig;
 import com.bmt.dream_relics.item.*;
 import com.bmt.dream_relics.init.DRCapabilities;
 import com.bmt.dream_relics.init.DRItems;
@@ -58,10 +59,10 @@ public class EventHandler {
             if (event.getSource().getEntity() instanceof Player player) {
                 CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
                     if (iCuriosItemHandler.isEquipped(DRItems.ECHO_EARRING.get())) {
-                        if (player.getRandom().nextFloat() < 0.30f) {
+                        if (player.getRandom().nextFloat() < CommonConfig.echoEarringTriggerChance) {
                             LivingEntity target = event.getEntity();
                             float baseDamage = event.getAmount();
-                            float extraDamage = baseDamage * 0.40f;
+                            float extraDamage = baseDamage * (float) CommonConfig.echoEarringExtraDamageMultiplier;
 
                             triggerSonicWave(player, target, extraDamage);
                         }
@@ -88,7 +89,7 @@ public class EventHandler {
                 CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
                     if (iCuriosItemHandler.isEquipped(DRItems.HEART_VOICE_PENDANT.get())) {
                         float maxHealth = player.getMaxHealth();
-                        float maxAllowedDamage = maxHealth * 0.25f;
+                        float maxAllowedDamage = maxHealth * (float) CommonConfig.heartVoicePendantMaxDamagePercent;
 
                         if (event.getAmount() > maxAllowedDamage) {
                             event.setAmount(maxAllowedDamage);
@@ -103,8 +104,8 @@ public class EventHandler {
                         if (event.getEntity() instanceof LivingEntity) {
                             LivingEntity attackedEntity = event.getEntity();
                             if (!(attackedEntity instanceof Player)) {
-                                if (player.getRandom().nextFloat() < 0.10f) {
-                                    SleepStateManager.setSleeping(attackedEntity, 60);
+                                if (player.getRandom().nextFloat() < CommonConfig.endlessDreamTriggerChance) {
+                                    SleepStateManager.setSleeping(attackedEntity, CommonConfig.endlessDreamSleepDuration);
                                 }
                             }
                         }
@@ -131,7 +132,7 @@ public class EventHandler {
                 if (owner instanceof Player player) {
                     CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
                         if (iCuriosItemHandler.isEquipped(DRItems.ROYAL_CROWN.get())) {
-                            float reducedDamage = event.getAmount() * 0.6f;
+                            float reducedDamage = event.getAmount() * (float) CommonConfig.royalCrownPetDamageReduction;
                             event.setAmount(reducedDamage);
                         }
                     });
@@ -143,7 +144,7 @@ public class EventHandler {
                 if (owner instanceof Player player) {
                     CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
                         if (iCuriosItemHandler.isEquipped(DRItems.ROYAL_CROWN.get())) {
-                            float boostedDamage = event.getAmount() * 1.2f;
+                            float boostedDamage = event.getAmount() * (float) CommonConfig.royalCrownPetDamageBoost;
                             event.setAmount(boostedDamage);
                         }
                     });
@@ -156,8 +157,8 @@ public class EventHandler {
                 return;
             }
 
-            float range = 8.0f;
-            float width = 0.4f;
+            float range = (float) CommonConfig.echoEarringRange;
+            float width = (float) CommonConfig.echoEarringWidth;
 
             Vec3 start = player.getEyePosition();
             Vec3 end = start.add(player.getForward().scale(range));
@@ -208,7 +209,7 @@ public class EventHandler {
             float maxHealth = target.getMaxHealth();
             float healthPercentage = (currentHealth / maxHealth) * 100;
 
-            return 1.0f + (healthPercentage / 100.0f) * 0.5f;
+            return 1.0f + (healthPercentage / 100.0f) * (float) CommonConfig.tasselRingDamageMultiplierMax;
         }
 
         @SubscribeEvent
@@ -235,7 +236,7 @@ public class EventHandler {
             CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
                 if (iCuriosItemHandler.isEquipped(DRItems.RARE_GOLD_BRACELET.get())) {
                     if (isOreBlock(event.getState())) {
-                        if (player.getRandom().nextFloat() < 0.30f) {
+                        if (player.getRandom().nextFloat() < CommonConfig.rareGoldBraceletDoubleDropChance) {
                             List<ItemStack> drops = net.minecraft.world.level.block.Block.getDrops(
                                     event.getState(),
                                     (ServerLevel) event.getLevel(),
@@ -357,10 +358,10 @@ public class EventHandler {
                     float currentModifier = event.getDamageModifier();
 
                     if (Math.abs(currentModifier - 1.5F) < 0.01F) {
-                        event.setDamageModifier(2.0F);
+                        event.setDamageModifier((float) CommonConfig.royalLensCritDamageMultiplier);
                     } else if (currentModifier > 1.0F) {
                         float relativeMultiplier = currentModifier / 1.5F;
-                        event.setDamageModifier(relativeMultiplier * 2.0F);
+                        event.setDamageModifier(relativeMultiplier * (float) CommonConfig.royalLensCritDamageMultiplier);
                     }
                 }
             });
@@ -391,7 +392,7 @@ public class EventHandler {
             CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
                 if (iCuriosItemHandler.isEquipped(DRItems.PURE_HOLY_GRAIL.get())) {
                     int originalXp = event.getAmount();
-                    int increasedXp = (int) (originalXp * 1.5F);
+                    int increasedXp = (int) (originalXp * CommonConfig.pureHolyGrailXpMultiplier);
                     event.setAmount(increasedXp);
                 }
             });
@@ -404,7 +405,7 @@ public class EventHandler {
             CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
                 if (iCuriosItemHandler.isEquipped(DRItems.PURE_HOLY_GRAIL.get())) {
                     int originalValue = event.getOrb().getValue();
-                    event.getOrb().value = (int) (originalValue * 1.5F);
+                    event.getOrb().value = (int) (originalValue * CommonConfig.pureHolyGrailXpMultiplier);
                 }
             });
         }
@@ -479,7 +480,7 @@ public class EventHandler {
             Player player = event.player;
 
             if (PastRingItem.isEquipped(player)) {
-                if (player.tickCount % 100 == 0) {
+                if (player.tickCount % CommonConfig.pastRingRepairInterval == 0) {
                     PastRingItem.repairPlayerItems(player);
                 }
             }
@@ -496,7 +497,7 @@ public class EventHandler {
         }
 
         private static void accelerateBlockTicksAroundPlayer(Player player) {
-            int radius = 8;
+            int radius = CommonConfig.timeHourglassRadius;
             int centerX = (int) player.getX();
             int centerY = (int) player.getY();
             int centerZ = (int) player.getZ();
@@ -515,7 +516,7 @@ public class EventHandler {
                             BlockState state = player.level().getBlockState(pos);
                             BlockEntity blockEntity = player.level().getBlockEntity(pos);
 
-                            double acceleration = 1.0 + (radius - distance) / radius * 2.0;
+                            double acceleration = 1.0 + (radius - distance) / radius * CommonConfig.timeHourglassAccelerationFactor;
 
                             if (state.isRandomlyTicking()) {
                                 if (player.level().random.nextDouble() < 0.3 * (acceleration - 1.0)) {

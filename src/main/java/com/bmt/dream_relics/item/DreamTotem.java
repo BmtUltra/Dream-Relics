@@ -1,10 +1,10 @@
 package com.bmt.dream_relics.item;
 
+import com.bmt.dream_relics.config.CommonConfig;
 import com.bmt.dream_relics.init.DRItems;
 import com.bmt.dream_relics.util.SleepStateManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -30,10 +30,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class DreamTotem extends DreamRelicItemBase implements ICurioItem {
-
-    private static final int EFFECT_RANGE = 16;
-    private static final int SLEEP_DURATION = 200;
-    private static final int COOLDOWN_TICKS = 1200;
 
     public DreamTotem(Properties properties) {
         super(properties.stacksTo(1));
@@ -64,7 +60,7 @@ public class DreamTotem extends DreamRelicItemBase implements ICurioItem {
     }
 
     private static boolean activateTotemForDeathPrevention(ItemStack stack, Player player, Level level) {
-        player.getCooldowns().addCooldown(DRItems.DREAM_TOTEM.get(), COOLDOWN_TICKS);
+        player.getCooldowns().addCooldown(DRItems.DREAM_TOTEM.get(), CommonConfig.dreamTotemCooldown);
 
         player.setHealth(2.0F);
         player.removeAllEffects();
@@ -74,13 +70,13 @@ public class DreamTotem extends DreamRelicItemBase implements ICurioItem {
 
         BlockPos pos = player.blockPosition();
         AABB area = new AABB(
-                pos.getX() - EFFECT_RANGE, pos.getY() - EFFECT_RANGE, pos.getZ() - EFFECT_RANGE,
-                pos.getX() + EFFECT_RANGE, pos.getY() + EFFECT_RANGE, pos.getZ() + EFFECT_RANGE
+                pos.getX() - CommonConfig.dreamTotemEffectRange, pos.getY() - CommonConfig.dreamTotemEffectRange, pos.getZ() - CommonConfig.dreamTotemEffectRange,
+                pos.getX() + CommonConfig.dreamTotemEffectRange, pos.getY() + CommonConfig.dreamTotemEffectRange, pos.getZ() + CommonConfig.dreamTotemEffectRange
         );
 
         for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, area)) {
             if (entity instanceof Mob) {
-                SleepStateManager.setSleeping(entity, SLEEP_DURATION);
+                SleepStateManager.setSleeping(entity, CommonConfig.dreamTotemSleepDuration);
             }
         }
 
@@ -88,7 +84,6 @@ public class DreamTotem extends DreamRelicItemBase implements ICurioItem {
                 SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
 
         level.broadcastEntityEvent(player, (byte)35);
-
         return true;
     }
 

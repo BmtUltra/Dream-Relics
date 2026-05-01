@@ -2,6 +2,7 @@ package com.bmt.dream_relics.client.event;
 
 import com.bmt.dream_relics.DreamRelics;
 import com.bmt.dream_relics.client.DRClient;
+import com.bmt.dream_relics.config.CommonConfig;
 import com.bmt.dream_relics.init.DRItems;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,7 +20,6 @@ import java.util.Set;
 @SuppressWarnings("all")
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = DreamRelics.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class GlowEffectHandler {
-    private static final int RANGE = 16;
     private static final Set<LivingEntity> glowingEntities = new HashSet<>();
     private static boolean effectActive = false;
 
@@ -50,9 +50,11 @@ public class GlowEffectHandler {
     private static void updateGlowingEntities(Player player) {
         Set<LivingEntity> newGlowingEntities = new HashSet<>();
 
+        int range = CommonConfig.observeSelfEyeRange;
+
         AABB area = new AABB(
-                player.getX() - RANGE, player.getY() - RANGE, player.getZ() - RANGE,
-                player.getX() + RANGE, player.getY() + RANGE, player.getZ() + RANGE
+                player.getX() - range, player.getY() - range, player.getZ() - range,
+                player.getX() + range, player.getY() + range, player.getZ() + range
         );
 
         for (Entity entity : player.level().getEntities(player, area)) {

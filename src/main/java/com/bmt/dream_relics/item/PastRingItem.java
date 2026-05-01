@@ -1,5 +1,6 @@
 package com.bmt.dream_relics.item;
 
+import com.bmt.dream_relics.config.CommonConfig;
 import com.bmt.dream_relics.init.DRItems;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -70,7 +71,7 @@ public class PastRingItem extends DreamRelicItem {
         if (maxDamage <= 0) {
             return 0;
         }
-        return 1;
+        return CommonConfig.pastRingXpCostPerDurability;
     }
 
     private static void repairOneDurability(ItemStack stack) {

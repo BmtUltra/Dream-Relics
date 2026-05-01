@@ -1,6 +1,7 @@
 package com.bmt.dream_relics.item;
 
 import com.bmt.dream_relics.client.DRClient;
+import com.bmt.dream_relics.config.CommonConfig;
 import com.bmt.dream_relics.util.FlowStateManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -19,8 +20,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MomentStoneItem extends Item {
-    private static final int COOLDOWN_TICKS = 400;
-    private static final int FLOW_DURATION_TICKS = 180;
 
     public MomentStoneItem(Properties properties) {
         super(properties.stacksTo(1));
@@ -50,9 +49,9 @@ public class MomentStoneItem extends Item {
             return InteractionResult.FAIL;
         }
 
-        player.getCooldowns().addCooldown(this, COOLDOWN_TICKS);
+        player.getCooldowns().addCooldown(this, CommonConfig.momentStoneCooldown);
 
-        FlowStateManager.startFlow(level, pos, FLOW_DURATION_TICKS);
+        FlowStateManager.startFlow(level, pos, CommonConfig.momentStoneFlowDuration);
 
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
@@ -72,7 +71,7 @@ public class MomentStoneItem extends Item {
             Player player = DRClient.getLocalPlayer();
             if (player != null && player.getCooldowns().isOnCooldown(this)) {
                 float cooldownPercent = player.getCooldowns().getCooldownPercent(this, 0.0F);
-                int remainingTicks = (int) (cooldownPercent * COOLDOWN_TICKS);
+                int remainingTicks = (int) (cooldownPercent * CommonConfig.momentStoneCooldown);
                 int remainingSeconds = (int) Math.ceil(remainingTicks / 20.0);
                 if (remainingSeconds > 0) {
                     tooltip.add(Component.translatable("item.dream_relics.moment_stone.cooldown", remainingSeconds)

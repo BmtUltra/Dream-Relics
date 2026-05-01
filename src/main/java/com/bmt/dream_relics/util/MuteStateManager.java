@@ -1,5 +1,6 @@
 package com.bmt.dream_relics.util;
 
+import com.bmt.dream_relics.config.CommonConfig;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -9,12 +10,9 @@ public class MuteStateManager {
     private static final String MUTE_STATE_KEY = "DreamRelics_MuteState";
     private static final String MUTE_DURATION_KEY = "MuteDuration";
     private static final String MUTE_TICKS_KEY = "MuteTicks";
-    private static final float DAMAGE_REDUCTION = 0.4f;
-
-    public static final int DEFAULT_MUTE_DURATION = 120;
 
     public static void setMuted(LivingEntity entity) {
-        setMuted(entity, DEFAULT_MUTE_DURATION);
+        setMuted(entity, CommonConfig.darkWhisperDaggerMuteDuration);
     }
 
     public static void setMuted(LivingEntity entity, int durationTicks) {
@@ -59,7 +57,7 @@ public class MuteStateManager {
 
     public static float getDamageMultiplier(LivingEntity entity) {
         if (isMuted(entity)) {
-            return DAMAGE_REDUCTION;
+            return (float) CommonConfig.darkWhisperDaggerDamageMultiplier;
         }
         return 1.0f;
     }
