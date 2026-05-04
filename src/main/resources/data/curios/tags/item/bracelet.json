@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "dream_relics:awaken_dream_bracelet",
+      "required": false
+    },
+    {
+      "id": "dream_relics:rare_gold_bracelet",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "required": true,
+  "package": "com.bmt.dream_relics.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "curios.CurioInventoryWrapperMixin",
+    "minecraft.BlockMixin",
+    "minecraft.DreamBalanceMixin",
+    "minecraft.InventoryMixin",
+    "minecraft.LivingEntityGlowMixin",
+    "minecraft.LivingEntityMixin",
+    "minecraft.MistVeilRingMixin",
+    "minecraft.ServerLevelMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  },
+  "client": [
+    "minecraft.ElvenBootsMixin"
+  ]
+}

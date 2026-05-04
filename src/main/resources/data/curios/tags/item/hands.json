@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "dream_relics:ocean_current_blessing",
+      "required": false
+    },
+    {
+      "id": "dream_relics:pure_holy_grail",
+      "required": false
+    },
+    {
+      "id": "dream_relics:dream_balance",
+      "required": false
+    }
+  ]
+}

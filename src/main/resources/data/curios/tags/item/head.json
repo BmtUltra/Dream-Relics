@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "dream_relics:royal_lens",
+      "required": false
+    },
+    {
+      "id": "dream_relics:royal_crown",
+      "required": false
+    },
+    {
+      "id": "dream_relics:observe_self_eye",
+      "required": false
+    },
+    {
+      "id": "dream_relics:echo_earring",
+      "required": false
+    }
+  ]
+}
