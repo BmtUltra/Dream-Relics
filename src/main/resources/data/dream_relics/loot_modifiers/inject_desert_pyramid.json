@@ -1,0 +1,13 @@
+{
+  "type": "dream_relics:config_loot_modifier",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/desert_pyramid"
+    }
+  ],
+  "entries": [
+    "dream_relics:pure_holy_grail",
+    "dream_relics:elven_boots"
+  ]
+}

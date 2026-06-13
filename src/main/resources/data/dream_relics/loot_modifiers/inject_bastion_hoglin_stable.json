@@ -1,0 +1,14 @@
+{
+  "type": "dream_relics:config_loot_modifier",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/bastion_hoglin_stable"
+    }
+  ],
+  "entries": [
+    "dream_relics:dream_balance",
+    "dream_relics:years_amber",
+    "dream_relics:icarus_wings"
+  ]
+}

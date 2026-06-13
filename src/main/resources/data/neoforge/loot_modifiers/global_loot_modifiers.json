@@ -1,0 +1,30 @@
+{
+  "replace": false,
+  "entries": [
+    "dream_relics:inject_simple_dungeon",
+    "dream_relics:inject_abandoned_mineshaft",
+    "dream_relics:inject_desert_pyramid",
+    "dream_relics:inject_jungle_temple",
+    "dream_relics:inject_stronghold_corridor",
+    "dream_relics:inject_stronghold_crossing",
+    "dream_relics:inject_stronghold_library",
+    "dream_relics:inject_woodland_mansion",
+    "dream_relics:inject_pillager_outpost",
+    "dream_relics:inject_buried_treasure",
+    "dream_relics:inject_shipwreck_treasure",
+    "dream_relics:inject_shipwreck_supply",
+    "dream_relics:inject_underwater_ruin_big",
+    "dream_relics:inject_underwater_ruin_small",
+    "dream_relics:inject_village_toolsmith",
+    "dream_relics:inject_village_weaponsmith",
+    "dream_relics:inject_village_temple",
+    "dream_relics:inject_ruined_portal",
+    "dream_relics:inject_nether_bridge",
+    "dream_relics:inject_bastion_treasure",
+    "dream_relics:inject_bastion_hoglin_stable",
+    "dream_relics:inject_bastion_bridge",
+    "dream_relics:inject_bastion_other",
+    "dream_relics:inject_end_city_treasure",
+    "dream_relics:inject_ancient_city"
+  ]
+}

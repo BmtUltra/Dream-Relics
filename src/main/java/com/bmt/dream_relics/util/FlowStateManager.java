@@ -17,17 +17,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class FlowStateManager {
-    private static final String FLOW_STATE_KEY = "DreamRelics_FlowState";
     private static final String FLOW_BLOCKS_KEY = "FlowBlocks";
     private static final String BLOCK_POS_KEY = "BlockPos";
     private static final String REMAINING_TICKS_KEY = "RemainingTicks";
     private static final String DURATION_TICKS_KEY = "DurationTicks";
-
-    private static final Map<Level, Map<BlockPos, Integer>> flowBlocks = new HashMap<>();
 
     public static void startFlow(Level level, BlockPos pos, int durationTicks) {
         if (!level.isClientSide && level instanceof ServerLevel serverLevel) {
@@ -48,10 +42,6 @@ public class FlowStateManager {
 
             generateInitialParticles(serverLevel, pos);
         }
-    }
-
-    public static void startFlow(Level level, BlockPos pos) {
-        startFlow(level, pos, 120);
     }
 
     private static void generateInitialParticles(ServerLevel serverLevel, BlockPos pos) {
@@ -172,42 +162,6 @@ public class FlowStateManager {
             }
         }
         return false;
-    }
-
-    public static int getRemainingTicks(Level level, BlockPos pos) {
-        if (level.isClientSide || !(level instanceof ServerLevel serverLevel)) {
-            return 0;
-        }
-
-        FlowSavedData savedData = getSavedData(serverLevel);
-        ListTag flowList = savedData.getFlowList();
-
-        for (int i = 0; i < flowList.size(); i++) {
-            CompoundTag flowData = flowList.getCompound(i);
-            BlockPos storedPos = NbtUtils.readBlockPos(flowData, BLOCK_POS_KEY).orElse(BlockPos.ZERO);
-            if (storedPos.equals(pos)) {
-                return flowData.getInt(REMAINING_TICKS_KEY);
-            }
-        }
-        return 0;
-    }
-
-    public static int getDurationTicks(Level level, BlockPos pos) {
-        if (level.isClientSide || !(level instanceof ServerLevel serverLevel)) {
-            return 0;
-        }
-
-        FlowSavedData savedData = getSavedData(serverLevel);
-        ListTag flowList = savedData.getFlowList();
-
-        for (int i = 0; i < flowList.size(); i++) {
-            CompoundTag flowData = flowList.getCompound(i);
-            BlockPos storedPos = NbtUtils.readBlockPos(flowData, BLOCK_POS_KEY).orElse(BlockPos.ZERO);
-            if (storedPos.equals(pos)) {
-                return flowData.getInt(DURATION_TICKS_KEY);
-            }
-        }
-        return 0;
     }
 
     private static FlowSavedData getSavedData(ServerLevel level) {

@@ -7,10 +7,12 @@
     "minecraft.BlockMixin",
     "minecraft.DreamBalanceMixin",
     "minecraft.InventoryMixin",
+    "minecraft.ItemStackDurabilityMixin",
     "minecraft.LivingEntityGlowMixin",
     "minecraft.LivingEntityMixin",
     "minecraft.MistVeilRingMixin",
-    "minecraft.ServerLevelMixin"
+    "minecraft.ServerPlayerGameModeMixin",
+    "minecraft.SleepStatusMixin"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -19,6 +21,7 @@
     "requireAnnotations": true
   },
   "client": [
+    "client.ClientPacketListenerMixin",
     "minecraft.ElvenBootsMixin"
   ]
 }

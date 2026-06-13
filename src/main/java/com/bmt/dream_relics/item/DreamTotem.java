@@ -43,21 +43,20 @@ public class DreamTotem extends DreamRelicItemBase implements ICurioItem {
             ICuriosItemHandler handler = optional.get();
             List<SlotResult> results = handler.findCurios(DRItems.DREAM_TOTEM.get());
             if (!results.isEmpty()) {
-                ItemStack totem = results.get(0).stack();
-                return activateTotemForDeathPrevention(totem, player, level);
+                return activateTotemForDeathPrevention(player, level);
             }
         }
 
         for (InteractionHand hand : InteractionHand.values()) {
             ItemStack stack = player.getItemInHand(hand);
             if (stack.getItem() == DRItems.DREAM_TOTEM.get()) {
-                return activateTotemForDeathPrevention(stack, player, level);
+                return activateTotemForDeathPrevention(player, level);
             }
         }
         return false;
     }
 
-    private static boolean activateTotemForDeathPrevention(ItemStack stack, Player player, Level level) {
+    private static boolean activateTotemForDeathPrevention(Player player, Level level) {
         player.getCooldowns().addCooldown(DRItems.DREAM_TOTEM.get(), CommonConfig.dreamTotemCooldown);
 
         player.setHealth(2.0F);

@@ -4,9 +4,6 @@ import com.bmt.dream_relics.config.CommonConfig;
 import com.bmt.dream_relics.init.DRDataComponents;
 import com.bmt.dream_relics.init.DRItems;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +14,6 @@ import top.theillusivec4.curios.api.SlotResult;
 import java.util.List;
 
 public class MemoryNecklaceItem extends DreamRelicItem {
-    private static final String TAG_STORED_DAMAGE = "StoredDamage";
 
     public MemoryNecklaceItem(Properties properties) {
         super(properties, "tooltip.dream_relics.memory_necklace");

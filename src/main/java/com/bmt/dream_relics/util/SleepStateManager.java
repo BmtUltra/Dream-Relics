@@ -47,19 +47,6 @@ public class SleepStateManager {
         }
     }
 
-    public static int getRemainingTicks(LivingEntity entity) {
-        CompoundTag data = entity.getPersistentData();
-        if (data.contains("DreamRelics")) {
-            CompoundTag sleepData = data.getCompound("DreamRelics");
-            if (sleepData.getBoolean(SLEEP_STATE_KEY)) {
-                int duration = sleepData.getInt(SLEEP_DURATION_KEY);
-                int currentTicks = sleepData.getInt(SLEEP_TICKS_KEY);
-                return Math.max(0, duration - currentTicks);
-            }
-        }
-        return 0;
-    }
-
     public static void updateSleepState(LivingEntity entity) {
         if (isSleeping(entity)) {
             CompoundTag data = entity.getPersistentData();

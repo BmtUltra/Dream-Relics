@@ -2,6 +2,7 @@ package com.bmt.dream_relics.item;
 
 import com.bmt.dream_relics.init.DRDataComponents;
 import com.bmt.dream_relics.init.DRDataComponents.MemoryStardustContainer;
+import com.bmt.dream_relics.integration.ArtifactsCompat;
 import com.bmt.dream_relics.util.DRUtil;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -10,6 +11,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -25,7 +27,9 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @SuppressWarnings("all")
 public class MemoryStardustItem extends DreamRelicItem {
@@ -99,7 +103,7 @@ public class MemoryStardustItem extends DreamRelicItem {
         }
 
         ItemStackHandler items = getItems(stardust);
-        for (int i = 0; i < items.getSlots(); i++) {
+        for (int i = items.getSlots() - 1; i >= 0; i--) {
             ItemStack extractItem = items.extractItem(i, 1, false);
             if (!extractItem.isEmpty()) {
                 setItems(stardust, items);
@@ -107,6 +111,28 @@ public class MemoryStardustItem extends DreamRelicItem {
             }
         }
         return Optional.empty();
+    }
+
+    private static void triggerArtifactsSync(LivingEntity entity, ItemStack removedItem, ItemStack addedItem) {
+        if (ArtifactsCompat.isArtifactsLoaded()) {
+            ArtifactsCompat.syncItemChange(entity, removedItem, addedItem);
+        }
+    }
+
+    private static void syncAllInternalItems(LivingEntity entity, ItemStack stardust, boolean equip) {
+        if (!hasItems(stardust)) return;
+        
+        ItemStackHandler items = getItems(stardust);
+        for (int i = 0; i < items.getSlots(); i++) {
+            ItemStack relic = items.getStackInSlot(i);
+            if (!relic.isEmpty()) {
+                if (equip) {
+                    triggerArtifactsSync(entity, ItemStack.EMPTY, relic);
+                } else {
+                    triggerArtifactsSync(entity, relic, ItemStack.EMPTY);
+                }
+            }
+        }
     }
 
     @Override
@@ -117,14 +143,17 @@ public class MemoryStardustItem extends DreamRelicItem {
 
         ItemStack clickItem = slot.getItem();
         if (clickItem.isEmpty()) {
-            removeOne(stardust).ifPresent(stack -> {
+            Optional<ItemStack> removed = removeOne(stardust);
+            if (removed.isPresent()) {
+                ItemStack stack = removed.get();
                 if (slot.mayPlace(stack)) {
                     playRemoveOneSound(player);
                     slot.safeInsert(stack);
+                    triggerArtifactsSync(player, stack, ItemStack.EMPTY);
                 } else {
                     add(stardust, stack);
                 }
-            });
+            }
             return true;
         } else if (canAdd(clickItem)) {
             int addCount = add(stardust, clickItem, true);
@@ -132,6 +161,7 @@ public class MemoryStardustItem extends DreamRelicItem {
                 ItemStack takeout = slot.safeTake(clickItem.getCount(), addCount, player);
                 if (!takeout.isEmpty()) {
                     add(stardust, takeout);
+                    triggerArtifactsSync(player, ItemStack.EMPTY, takeout);
                 }
                 playInsertSound(player);
             }
@@ -151,29 +181,44 @@ public class MemoryStardustItem extends DreamRelicItem {
         }
 
         if (other.isEmpty()) {
-            removeOne(stardust).ifPresent(stack -> {
+            Optional<ItemStack> removed = removeOne(stardust);
+            if (removed.isPresent()) {
+                ItemStack stack = removed.get();
                 playRemoveOneSound(player);
                 access.set(stack);
-            });
+                triggerArtifactsSync(player, stack, ItemStack.EMPTY);
+            }
             return true;
-        } else {
+        } else if (canAdd(other)) {
             int added = add(stardust, other);
             if (added > 0) {
                 playInsertSound(player);
+                ItemStack toAdd = other.copy();
+                toAdd.setCount(added);
                 other.shrink(added);
+                triggerArtifactsSync(player, ItemStack.EMPTY, toAdd);
             }
             return added > 0;
         }
+        return false;
     }
 
     @Override
     public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {
         toggleMethod(MethodName.EQ, stack, slotContext, prevStack);
+        
+        if (hasItems(stack)) {
+            syncAllInternalItems(slotContext.entity(), stack, true);
+        }
     }
 
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack, ItemStack stack) {
         toggleMethod(MethodName.UN, stack, slotContext, newStack);
+        
+        if (hasItems(stack)) {
+            syncAllInternalItems(slotContext.entity(), stack, false);
+        }
     }
 
     @Override

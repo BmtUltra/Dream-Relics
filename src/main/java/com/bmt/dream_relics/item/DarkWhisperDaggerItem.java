@@ -2,12 +2,14 @@ package com.bmt.dream_relics.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.*;
-import top.theillusivec4.curios.api.type.capability.ICurioItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TooltipFlag;
 
 import java.util.List;
 
-public class DarkWhisperDaggerItem extends SwordItem implements ICurioItem {
+public class DarkWhisperDaggerItem extends SwordItem {
     private final String tooltipKey;
 
     public DarkWhisperDaggerItem(Tier tier, int attackDamageModifier, float attackSpeed, Properties properties) {

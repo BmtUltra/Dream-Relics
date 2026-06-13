@@ -1,6 +1,7 @@
 package com.bmt.dream_relics.item;
 
 import com.bmt.dream_relics.init.DRItems;
+import com.bmt.dream_relics.util.YearsAmberDurabilityTracker;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
@@ -42,7 +43,6 @@ public class YearsAmber extends DreamRelicItem {
         float speed = 0;
         ItemStack newItem = null;
 
-        // 使用 ResourceKey 获取效率附魔
         Holder<Enchantment> efficiencyEnchantment = player.level()
                 .registryAccess()
                 .registryOrThrow(Registries.ENCHANTMENT)
@@ -78,5 +78,14 @@ public class YearsAmber extends DreamRelicItem {
             return enchantments.getLevel(enchantment);
         }
         return 0;
+    }
+
+    @Nullable
+    public static Pair<Float, ItemStack> findBestCorrectToolFromTracker(Player player, ItemStack old) {
+        BlockState blockState = YearsAmberDurabilityTracker.getBlock();
+        if (blockState == null) {
+            return null;
+        }
+        return findBestCorrectTool(player, old, blockState);
     }
 }

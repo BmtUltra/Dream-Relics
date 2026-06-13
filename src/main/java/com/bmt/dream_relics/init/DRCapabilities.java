@@ -1,10 +1,11 @@
 package com.bmt.dream_relics.init;
 
+import com.bmt.dream_relics.DreamRelics;
 import com.bmt.dream_relics.common.capabilities.PlayerData;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import com.bmt.dream_relics.DreamRelics;
+
 import java.util.function.Supplier;
 
 public class DRCapabilities {

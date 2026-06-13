@@ -1,0 +1,12 @@
+{
+  "type": "dream_relics:config_loot_modifier",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/bastion_treasure"
+    }
+  ],
+  "entries": [
+    "dream_relics:astral_necklace"
+  ]
+}

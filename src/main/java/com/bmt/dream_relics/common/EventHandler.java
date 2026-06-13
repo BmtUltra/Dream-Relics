@@ -2,21 +2,24 @@ package com.bmt.dream_relics.common;
 
 import com.bmt.dream_relics.DreamRelics;
 import com.bmt.dream_relics.config.CommonConfig;
-import com.bmt.dream_relics.item.*;
 import com.bmt.dream_relics.init.DRCapabilities;
 import com.bmt.dream_relics.init.DRItems;
+import com.bmt.dream_relics.item.DreamTotem;
+import com.bmt.dream_relics.item.FlawlessGem;
+import com.bmt.dream_relics.item.MemoryNecklaceItem;
+import com.bmt.dream_relics.item.YearsAmber;
 import com.bmt.dream_relics.util.FlowStateManager;
 import com.bmt.dream_relics.util.MuteStateManager;
 import com.bmt.dream_relics.util.SleepStateManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -28,8 +31,13 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
-import net.neoforged.neoforge.event.entity.living.*;
-import net.neoforged.neoforge.event.entity.player.*;
+import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -376,6 +384,14 @@ public class EventHandler {
                     }
                 }
             }
+
+            if (!player.level().isClientSide && player.tickCount % 10 == 0) {
+                CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
+                    if (iCuriosItemHandler.isEquipped(DRItems.TIME_HOURGLASS.get())) {
+                        accelerateBlockTicksAroundPlayer(player);
+                    }
+                });
+            }
         }
 
         @SubscribeEvent
@@ -449,15 +465,7 @@ public class EventHandler {
 
             LivingEntity target = event.getNewAboutToBeSetTarget();
             if (target instanceof Player player) {
-                if (event.getEntity() instanceof net.minecraft.world.entity.monster.Zombie ||
-                        event.getEntity() instanceof net.minecraft.world.entity.monster.Skeleton ||
-                        event.getEntity() instanceof net.minecraft.world.entity.monster.WitherSkeleton ||
-                        event.getEntity() instanceof net.minecraft.world.entity.monster.ZombifiedPiglin ||
-                        event.getEntity() instanceof net.minecraft.world.entity.monster.Drowned ||
-                        event.getEntity() instanceof net.minecraft.world.entity.monster.Husk ||
-                        event.getEntity() instanceof net.minecraft.world.entity.monster.Stray ||
-                        event.getEntity() instanceof net.minecraft.world.entity.monster.Phantom ||
-                        event.getEntity() instanceof net.minecraft.world.entity.boss.wither.WitherBoss) {
+                if (event.getEntity().getType().is(EntityTypeTags.UNDEAD)) {
                     CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
                         if (iCuriosItemHandler.isEquipped(DRItems.DARK_WHISPER_RING.get())) {
                             event.setCanceled(true);

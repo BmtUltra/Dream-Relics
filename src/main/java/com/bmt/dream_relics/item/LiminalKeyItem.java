@@ -66,7 +66,6 @@ public class LiminalKeyItem extends DreamRelicItem {
         if (transferred) {
             target.set(DataComponents.ENCHANTMENTS, targetMutable.toImmutable());
 
-            // 移除已转移的附魔
             ItemEnchantments newTargetEnchantments = target.get(DataComponents.ENCHANTMENTS);
             ItemEnchantments.Mutable keyMutable = new ItemEnchantments.Mutable(keyEnchantments);
 

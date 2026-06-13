@@ -11,12 +11,7 @@ import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 public final class DreamRelicsCurioCompatHelper {
@@ -75,10 +70,7 @@ public final class DreamRelicsCurioCompatHelper {
     public static List<SlotResult> findStoredCuriosByIdentifiers(LivingEntity wearer,
                                                                  Map<String, ICurioStacksHandler> curios,
                                                                  String... identifiers) {
-        Set<String> idSet = new HashSet<>();
-        for (String identifier : identifiers) {
-            idSet.add(identifier);
-        }
+        Set<String> idSet = new HashSet<>(Arrays.asList(identifiers));
 
         List<SlotResult> results = new ArrayList<>();
 

@@ -1,0 +1,16 @@
+{
+  "type": "dream_relics:config_loot_modifier",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/end_city_treasure"
+    }
+  ],
+  "entries": [
+    "dream_relics:moment_stone",
+    "dream_relics:heart_voice_pendant",
+    "dream_relics:memory_stardust",
+    "dream_relics:time_hourglass",
+    "dream_relics:tassel_ring"
+  ]
+}

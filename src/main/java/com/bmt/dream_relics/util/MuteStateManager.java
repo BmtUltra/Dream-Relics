@@ -42,19 +42,6 @@ public class MuteStateManager {
         }
     }
 
-    public static int getRemainingTicks(LivingEntity entity) {
-        CompoundTag data = entity.getPersistentData();
-        if (data.contains("DreamRelics_Mute")) {
-            CompoundTag muteData = data.getCompound("DreamRelics_Mute");
-            if (muteData.getBoolean(MUTE_STATE_KEY)) {
-                int duration = muteData.getInt(MUTE_DURATION_KEY);
-                int currentTicks = muteData.getInt(MUTE_TICKS_KEY);
-                return Math.max(0, duration - currentTicks);
-            }
-        }
-        return 0;
-    }
-
     public static float getDamageMultiplier(LivingEntity entity) {
         if (isMuted(entity)) {
             return (float) CommonConfig.darkWhisperDaggerDamageMultiplier;
@@ -99,9 +86,5 @@ public class MuteStateManager {
                 removeMute(entity);
             }
         }
-    }
-
-    public static int secondsToTicks(float seconds) {
-        return (int) (seconds * 20);
     }
 }
