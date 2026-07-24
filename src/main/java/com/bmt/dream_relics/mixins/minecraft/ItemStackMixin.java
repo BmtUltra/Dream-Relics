@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 @Mixin(ItemStack.class)
-public class ItemStackDurabilityMixin {
+public class ItemStackMixin {
 
     @Inject(method = "hurtAndBreak(ILnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Ljava/util/function/Consumer;)V", 
             at = @At("HEAD"), cancellable = true)

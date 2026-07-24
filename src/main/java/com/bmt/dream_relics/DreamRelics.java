@@ -6,7 +6,7 @@ import com.bmt.dream_relics.init.DRCapabilities;
 import com.bmt.dream_relics.init.DRCreativeTabs;
 import com.bmt.dream_relics.init.DRDataComponents;
 import com.bmt.dream_relics.init.DRItems;
-import com.bmt.dream_relics.integration.ArtifactsCompat;
+import com.bmt.dream_relics.compat.artifacts.ArtifactsCompat;
 import com.bmt.dream_relics.loot.DRGlobalLootModifiers;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;

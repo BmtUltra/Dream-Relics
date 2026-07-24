@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import top.theillusivec4.curios.api.CuriosApi;
 
 @Mixin(Player.class)
-public class DreamBalanceMixin {
+public class PlayerMixin {
 
     @Inject(method = "getXpNeededForNextLevel", at = @At("HEAD"), cancellable = true)
     private void onGetXpNeededForNextLevel(CallbackInfoReturnable<Integer> cir) {

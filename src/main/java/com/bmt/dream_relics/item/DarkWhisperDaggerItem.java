@@ -17,7 +17,10 @@ public class DarkWhisperDaggerItem extends SwordItem {
     }
 
     public DarkWhisperDaggerItem(Tier tier, int attackDamageModifier, float attackSpeed, Properties properties, String tooltipKey) {
-        super(tier, properties.stacksTo(1));
+        super(tier, properties
+                .stacksTo(1)
+                .attributes(SwordItem.createAttributes(tier, attackDamageModifier, attackSpeed))
+        );
         this.tooltipKey = tooltipKey;
     }
 

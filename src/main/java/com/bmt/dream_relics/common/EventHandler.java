@@ -18,7 +18,6 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.EntityBlock;
@@ -34,7 +33,6 @@ import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
@@ -174,7 +172,6 @@ public class EventHandler {
             }
         }
 
-        // 修改 getDamageMultiplier 方法
         private static float getDamageMultiplier(LivingIncomingDamageEvent event) {
             LivingEntity target = event.getEntity();
             float currentHealth = target.getHealth();
@@ -184,7 +181,6 @@ public class EventHandler {
             return 1.0f + (healthPercentage / 100.0f) * (float) CommonConfig.tasselRingDamageMultiplierMax;
         }
 
-        // 修改 onLivingHurt 方法
         @SubscribeEvent
         public static void onLivingHurt(LivingIncomingDamageEvent event) {
             if (event.getEntity() instanceof Player player) {
@@ -452,52 +448,18 @@ public class EventHandler {
 
         @SubscribeEvent
         public static void onLivingSetTarget(LivingChangeTargetEvent event) {
-            if (event.getEntity() instanceof Phantom) {
-                LivingEntity newTarget = event.getNewAboutToBeSetTarget();
-                if (newTarget instanceof Player player) {
-                    CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
-                        if (iCuriosItemHandler.isEquipped(DRItems.NIGHTMARE_BOOK.get())) {
-                            event.setCanceled(true);
-                        }
-                    });
-                }
-            }
-
             LivingEntity target = event.getNewAboutToBeSetTarget();
             if (target instanceof Player player) {
                 if (event.getEntity().getType().is(EntityTypeTags.UNDEAD)) {
                     CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
                         if (iCuriosItemHandler.isEquipped(DRItems.DARK_WHISPER_RING.get())) {
-                            event.setCanceled(true);
+                            if (event.getEntity().getLastHurtByMob() != player) {
+                                event.setCanceled(true);
+                            }
                         }
                     });
                 }
             }
-        }
-
-        @SubscribeEvent
-        public static void onPlayerAttack(AttackEntityEvent event) {
-            Player player = event.getEntity();
-
-            if (!(event.getTarget() instanceof LivingEntity livingTarget)) {
-                return;
-            }
-
-            CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
-                if (iCuriosItemHandler.isEquipped(DRItems.NIGHTMARE_BOOK.get())) {
-                    List<Phantom> nearbyPhantoms = player.level().getEntitiesOfClass(
-                            Phantom.class,
-                            player.getBoundingBox().inflate(32.0D),
-                            phantom -> phantom.isAlive() && !phantom.is(event.getTarget())
-                    );
-
-                    for (Phantom phantom : nearbyPhantoms) {
-                        if (phantom.getTarget() == null || phantom.getTarget() == player) {
-                            phantom.setTarget(livingTarget);
-                        }
-                    }
-                }
-            });
         }
 
         private static void accelerateBlockTicksAroundPlayer(Player player) {
@@ -547,14 +509,6 @@ public class EventHandler {
                     }
                 }
             }
-        }
-    }
-
-    @EventBusSubscriber(modid = DreamRelics.MODID)
-    public static class ModEventHandler {
-        @SubscribeEvent
-        public static void RegisterCapabilitiesEvent(net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent event) {
-            // NeoForge 使用 EntityAttributeCreationEvent 注册属性
         }
     }
 }

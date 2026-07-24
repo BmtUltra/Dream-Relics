@@ -1,4 +1,4 @@
-package com.bmt.dream_relics.integration;
+package com.bmt.dream_relics.compat.artifacts;
 
 import artifacts.event.ArtifactHooks;
 import net.minecraft.world.entity.LivingEntity;

@@ -1,4 +1,4 @@
-package com.bmt.dream_relics.common;
+package com.bmt.dream_relics.util;
 
 import com.bmt.dream_relics.item.MemoryStardustItem;
 import net.minecraft.core.NonNullList;
@@ -14,16 +14,14 @@ import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 import java.util.*;
 import java.util.function.Predicate;
 
-public final class DreamRelicsCurioCompatHelper {
+public final class CurioCompatHelper {
 
     private static final int MAX_RECURSION_DEPTH = 8;
 
-    private DreamRelicsCurioCompatHelper() {
+    private CurioCompatHelper() {
     }
 
-    public static Optional<SlotResult> findFirstStoredCurio(LivingEntity wearer,
-                                                            Map<String, ICurioStacksHandler> curios,
-                                                            Predicate<ItemStack> filter) {
+    public static Optional<SlotResult> findFirstStoredCurio(LivingEntity wearer, Map<String, ICurioStacksHandler> curios, Predicate<ItemStack> filter) {
         for (Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet()) {
             String identifier = entry.getKey();
             ICurioStacksHandler stacksHandler = entry.getValue();

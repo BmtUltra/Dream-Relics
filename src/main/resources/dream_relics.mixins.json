@@ -5,12 +5,10 @@
   "mixins": [
     "curios.CurioInventoryWrapperMixin",
     "minecraft.BlockMixin",
-    "minecraft.DreamBalanceMixin",
+    "minecraft.PlayerMixin",
     "minecraft.InventoryMixin",
-    "minecraft.ItemStackDurabilityMixin",
-    "minecraft.LivingEntityGlowMixin",
+    "minecraft.ItemStackMixin",
     "minecraft.LivingEntityMixin",
-    "minecraft.MistVeilRingMixin",
     "minecraft.ServerPlayerGameModeMixin",
     "minecraft.SleepStatusMixin"
   ],
@@ -22,6 +20,6 @@
   },
   "client": [
     "client.ClientPacketListenerMixin",
-    "minecraft.ElvenBootsMixin"
+    "minecraft.LocalPlayerMixin"
   ]
 }

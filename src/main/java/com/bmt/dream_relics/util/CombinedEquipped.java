@@ -1,16 +1,16 @@
-package com.bmt.dream_relics.common;
+package com.bmt.dream_relics.util;
 
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import java.util.List;
 
-public class CombinedEquippedCuriosHandler implements IItemHandlerModifiable {
+public class CombinedEquipped implements IItemHandlerModifiable {
 
     private final IItemHandlerModifiable delegate;
     private final List<ItemStack> virtualStacks;
 
-    public CombinedEquippedCuriosHandler(IItemHandlerModifiable delegate, List<ItemStack> virtualStacks) {
+    public CombinedEquipped(IItemHandlerModifiable delegate, List<ItemStack> virtualStacks) {
         this.delegate = delegate;
         this.virtualStacks = virtualStacks;
     }

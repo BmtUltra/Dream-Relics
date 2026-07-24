@@ -2,7 +2,7 @@ package com.bmt.dream_relics.item;
 
 import com.bmt.dream_relics.init.DRDataComponents;
 import com.bmt.dream_relics.init.DRDataComponents.MemoryStardustContainer;
-import com.bmt.dream_relics.integration.ArtifactsCompat;
+import com.bmt.dream_relics.compat.artifacts.ArtifactsCompat;
 import com.bmt.dream_relics.util.DRUtil;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@SuppressWarnings("all")
 public class MemoryStardustItem extends DreamRelicItem {
     private static final int MAX_SIZE = 9;
 
@@ -255,6 +254,7 @@ public class MemoryStardustItem extends DreamRelicItem {
     }
 
     @Override
+    @SuppressWarnings("removal")
     public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(SlotContext slotContext, UUID uuid, ItemStack stack) {
         Multimap<Holder<Attribute>, AttributeModifier> result = ArrayListMultimap.create();
 

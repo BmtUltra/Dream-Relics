@@ -17,10 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import top.theillusivec4.curios.api.CuriosApi;
 
 @Mixin(LocalPlayer.class)
-public abstract class ElvenBootsMixin extends AbstractClientPlayer {
-
-    @Unique
-    private int dreamRelics$jumpCount = 0;
+public abstract class LocalPlayerMixin extends AbstractClientPlayer {
 
     @Unique
     private boolean dreamRelics$jumpedLastTick = false;
@@ -28,7 +25,7 @@ public abstract class ElvenBootsMixin extends AbstractClientPlayer {
     @Unique
     private boolean dreamRelics$hasIcarusWings = false;
 
-    public ElvenBootsMixin(ClientLevel clientLevel, GameProfile gameProfile) {
+    public LocalPlayerMixin(ClientLevel clientLevel, GameProfile gameProfile) {
         super(clientLevel, gameProfile);
     }
 
@@ -49,12 +46,9 @@ public abstract class ElvenBootsMixin extends AbstractClientPlayer {
             return;
         }
 
-        if (player.onGround() || player.onClimbable() || player.isInWater()) {
-            dreamRelics$jumpCount = 4;
-        } else if (!dreamRelics$jumpedLastTick && dreamRelics$jumpCount > 0 && player.getDeltaMovement().y < 0) {
+        if (!dreamRelics$jumpedLastTick && player.getDeltaMovement().y < 0) {
             if (player.input.jumping && !player.getAbilities().flying) {
                 if (dreamRelics$canJump(player)) {
-                    dreamRelics$jumpCount--;
                     player.jumpFromGround();
 
                     player.playSound(net.minecraft.sounds.SoundEvents.PLAYER_SMALL_FALL,

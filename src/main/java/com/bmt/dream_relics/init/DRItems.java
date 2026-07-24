@@ -2,9 +2,12 @@ package com.bmt.dream_relics.init;
 
 import com.bmt.dream_relics.DreamRelics;
 import com.bmt.dream_relics.item.*;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.SimpleTier;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
@@ -12,7 +15,14 @@ import java.util.function.Supplier;
 public class DRItems {
     public static final DeferredRegister.Items ITEMS =
             DeferredRegister.createItems(DreamRelics.MODID);
-
+    public static final Tier DARK_WHISPER_TIER = new SimpleTier(
+            BlockTags.NEEDS_IRON_TOOL,
+            0,
+            6.0F,
+            2.0F,
+            30,
+            () -> Ingredient.EMPTY
+    );
     public static final Supplier<Item> SOUL_MIRROR = ITEMS.register("soul_mirror",
             () -> new SoulMirrorItem(new Item.Properties()));
     public static final Supplier<Item> DREAM_TOTEM = ITEMS.register("dream_totem",
@@ -52,13 +62,13 @@ public class DRItems {
     public static final Supplier<Item> MIST_VEIL_RING = ITEMS.register("mist_veil_ring",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.mist_veil_ring"));
     public static final Supplier<Item> NIGHTMARE_BOOK = ITEMS.register("nightmare_book",
-            () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.nightmare_book"));
+            () -> new Item(new Item.Properties()));
     public static final Supplier<Item> VOID_NECKLACE = ITEMS.register("void_necklace",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.void_necklace"));
     public static final Supplier<Item> DARK_WHISPER_RING = ITEMS.register("dark_whisper_ring",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.dark_whisper_ring"));
     public static final Supplier<Item> DARK_WHISPER_DAGGER = ITEMS.register("dark_whisper_dagger",
-            () -> new DarkWhisperDaggerItem(Tiers.IRON, 1, -2.0F, new Item.Properties()));
+            () -> new DarkWhisperDaggerItem(DARK_WHISPER_TIER, 1, -2.0F, new Item.Properties()));
     public static final Supplier<Item> FLAWLESS_GEM = ITEMS.register("flawless_gem",
             () -> new FlawlessGem(new Item.Properties()));
     public static final Supplier<Item> ROYAL_LENS = ITEMS.register("royal_lens",

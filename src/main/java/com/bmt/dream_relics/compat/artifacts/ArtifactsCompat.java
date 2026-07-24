@@ -1,4 +1,4 @@
-package com.bmt.dream_relics.integration;
+package com.bmt.dream_relics.compat.artifacts;
 
 import artifacts.equipment.EquipmentSlotManager;
 import net.minecraft.world.entity.LivingEntity;
@@ -7,7 +7,6 @@ import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.NeoForge;
 
 public class ArtifactsCompat {
-    
     public static final String ARTIFACTS_MOD_ID = "artifacts";
     private static ArtifactsCompatProvider provider;
 

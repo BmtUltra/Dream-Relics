@@ -1,18 +1,19 @@
 package com.bmt.dream_relics.mixins.curios;
 
-import com.bmt.dream_relics.common.CombinedEquippedCuriosHandler;
-import com.bmt.dream_relics.common.DreamRelicsCurioCompatHelper;
+import com.bmt.dream_relics.item.MemoryStardustItem;
+import com.bmt.dream_relics.util.CombinedEquipped;
+import com.bmt.dream_relics.util.CurioCompatHelper;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
+import top.theillusivec4.curios.common.capability.CurioInventoryCapability;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -21,29 +22,28 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-@Pseudo
-@Mixin(targets = "top.theillusivec4.curios.common.capability.CurioInventoryCapability", remap = false)
+@Mixin(CurioInventoryCapability.class)
 public abstract class CurioInventoryWrapperMixin {
 
-    @Shadow(remap = false)
+    @Shadow
     public abstract Map<String, ICurioStacksHandler> getCurios();
 
-    @Shadow(remap = false)
+    @Shadow
     @Nullable
     public abstract LivingEntity getWearer();
 
     @Inject(method = "getEquippedCurios()Lnet/neoforged/neoforge/items/IItemHandlerModifiable;",
-            at = @At("RETURN"), cancellable = true, remap = false)
+            at = @At("RETURN"), cancellable = true)
     private void dreamRelics$getEquippedCurios(CallbackInfoReturnable<IItemHandlerModifiable> cir) {
-        List<ItemStack> virtualStacks = DreamRelicsCurioCompatHelper.collectVirtualEquippedStacks(this.getCurios());
+        List<ItemStack> virtualStacks = CurioCompatHelper.collectVirtualEquippedStacks(this.getCurios());
 
         if (!virtualStacks.isEmpty()) {
-            cir.setReturnValue(new CombinedEquippedCuriosHandler(cir.getReturnValue(), virtualStacks));
+            cir.setReturnValue(new CombinedEquipped(cir.getReturnValue(), virtualStacks));
         }
     }
 
     @Inject(method = "findFirstCurio(Ljava/util/function/Predicate;ZLjava/lang/String;)Ljava/util/Optional;",
-            at = @At("RETURN"), cancellable = true, remap = false)
+            at = @At("RETURN"), cancellable = true)
     private void dreamRelics$findFirstCurio(Predicate<ItemStack> filter,
                                             boolean includeInactive,
                                             String cacheKey,
@@ -57,12 +57,12 @@ public abstract class CurioInventoryWrapperMixin {
             return;
         }
 
-        DreamRelicsCurioCompatHelper.findFirstStoredCurio(wearer, this.getCurios(), filter)
+        CurioCompatHelper.findFirstStoredCurio(wearer, this.getCurios(), filter)
                 .ifPresent(result -> cir.setReturnValue(Optional.of(result)));
     }
 
     @Inject(method = "findCurios(Ljava/util/function/Predicate;ZLjava/lang/String;)Ljava/util/List;",
-            at = @At("RETURN"), cancellable = true, remap = false)
+            at = @At("RETURN"), cancellable = true)
     private void dreamRelics$findCurios(Predicate<ItemStack> filter,
                                         boolean includeInactive,
                                         String cacheKey,
@@ -73,12 +73,12 @@ public abstract class CurioInventoryWrapperMixin {
         }
 
         List<SlotResult> merged = new ArrayList<>(cir.getReturnValue());
-        merged.addAll(DreamRelicsCurioCompatHelper.findStoredCurios(wearer, this.getCurios(), filter));
+        merged.addAll(CurioCompatHelper.findStoredCurios(wearer, this.getCurios(), filter));
         cir.setReturnValue(merged);
     }
 
     @Inject(method = "findCurios(Z[Ljava/lang/String;)Ljava/util/List;",
-            at = @At("RETURN"), cancellable = true, remap = false)
+            at = @At("RETURN"), cancellable = true)
     private void dreamRelics$findCuriosByIdentifiers(boolean includeInactive,
                                                      String[] identifiers,
                                                      CallbackInfoReturnable<List<SlotResult>> cir) {
@@ -88,12 +88,12 @@ public abstract class CurioInventoryWrapperMixin {
         }
 
         List<SlotResult> merged = new ArrayList<>(cir.getReturnValue());
-        merged.addAll(DreamRelicsCurioCompatHelper.findStoredCuriosByIdentifiers(wearer, this.getCurios(), identifiers));
+        merged.addAll(CurioCompatHelper.findStoredCuriosByIdentifiers(wearer, this.getCurios(), identifiers));
         cir.setReturnValue(merged);
     }
 
     @Inject(method = "findCurio(Ljava/lang/String;IZ)Ljava/util/Optional;",
-            at = @At("RETURN"), cancellable = true, remap = false)
+            at = @At("RETURN"), cancellable = true)
     private void dreamRelics$findCurio(String identifier,
                                        int index,
                                        boolean includeInactive,
@@ -105,11 +105,11 @@ public abstract class CurioInventoryWrapperMixin {
 
         Optional<SlotResult> original = cir.getReturnValue();
 
-        if (original.isPresent() && !(original.get().stack().getItem() instanceof com.bmt.dream_relics.item.MemoryStardustItem)) {
+        if (original.isPresent() && !(original.get().stack().getItem() instanceof MemoryStardustItem)) {
             return;
         }
 
-        DreamRelicsCurioCompatHelper.findStoredCurioBySlot(wearer, this.getCurios(), identifier, index)
+        CurioCompatHelper.findStoredCurioBySlot(wearer, this.getCurios(), identifier, index)
                 .ifPresent(result -> cir.setReturnValue(Optional.of(result)));
     }
 }

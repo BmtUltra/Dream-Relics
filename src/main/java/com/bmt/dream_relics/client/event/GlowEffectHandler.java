@@ -20,7 +20,9 @@ import java.util.Set;
 @EventBusSubscriber(value = Dist.CLIENT, modid = DreamRelics.MODID)
 public class GlowEffectHandler {
     private static final Set<LivingEntity> glowingEntities = new HashSet<>();
-    private static boolean effectActive = false;
+
+    private static long lastUpdateTime = 0;
+    private static final long CACHE_DURATION_MS = 2000;
 
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Pre event) {
@@ -36,11 +38,15 @@ public class GlowEffectHandler {
                 .orElse(false);
 
         if (hasObserveSelfEye) {
-            effectActive = true;
-            updateGlowingEntities(player);
+
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastUpdateTime >= CACHE_DURATION_MS) {
+                updateGlowingEntities(player);
+                lastUpdateTime = currentTime;
+            }
         } else {
-            effectActive = false;
             glowingEntities.clear();
+            lastUpdateTime = 0;
         }
     }
 
@@ -63,19 +69,7 @@ public class GlowEffectHandler {
         glowingEntities.addAll(newGlowingEntities);
     }
 
-    public static boolean isEffectActive() {
-        return effectActive;
-    }
-
     public static Set<LivingEntity> getGlowingEntities() {
         return glowingEntities;
-    }
-
-    public static boolean shouldEntityGlow(LivingEntity entity) {
-        return glowingEntities.contains(entity);
-    }
-
-    static {
-        System.out.print("GlowEffectHandler initialized");
     }
 }

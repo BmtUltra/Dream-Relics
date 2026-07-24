@@ -1,6 +1,7 @@
-package com.bmt.dream_relics.integration;
+package com.bmt.dream_relics.compat.artifacts;
 
 import artifacts.equipment.EquipmentSlotProvider;
+import com.bmt.dream_relics.compat.curios.CuriosCompat;
 import com.bmt.dream_relics.item.MemoryStardustItem;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -48,7 +49,6 @@ public class ArtifactsCompatImpl {
                     }
                 }
             }
-            
             return init;
         }
         
