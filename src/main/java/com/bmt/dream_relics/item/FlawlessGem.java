@@ -48,7 +48,6 @@ public class FlawlessGem extends DreamRelicItemBase {
         if (itemStack.isEmpty() || !itemStack.isDamaged()) {
             return;
         }
-
         itemStack.setDamageValue(0);
     }
 

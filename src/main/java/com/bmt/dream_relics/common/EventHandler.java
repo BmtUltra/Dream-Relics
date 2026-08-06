@@ -4,10 +4,7 @@ import com.bmt.dream_relics.DreamRelics;
 import com.bmt.dream_relics.config.CommonConfig;
 import com.bmt.dream_relics.init.DRCapabilities;
 import com.bmt.dream_relics.init.DRItems;
-import com.bmt.dream_relics.item.DreamTotem;
-import com.bmt.dream_relics.item.FlawlessGem;
-import com.bmt.dream_relics.item.MemoryNecklaceItem;
-import com.bmt.dream_relics.item.YearsAmber;
+import com.bmt.dream_relics.item.*;
 import com.bmt.dream_relics.util.FlowStateManager;
 import com.bmt.dream_relics.util.MuteStateManager;
 import com.bmt.dream_relics.util.SleepStateManager;
@@ -18,6 +15,10 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.EntityBlock;
@@ -30,6 +31,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
+import net.neoforged.neoforge.event.entity.living.LivingBreatheEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -42,6 +44,9 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EventHandler {
     @EventBusSubscriber(modid = DreamRelics.MODID)
@@ -147,7 +152,7 @@ public class EventHandler {
 
             LivingEntity target = event.getEntity();
 
-            if (target instanceof net.minecraft.world.entity.TamableAnimal tamable) {
+            if (target instanceof TamableAnimal tamable) {
                 LivingEntity owner = tamable.getOwner();
                 if (owner instanceof Player player) {
                     CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
@@ -159,7 +164,7 @@ public class EventHandler {
                 }
             }
 
-            if (damageSource.getEntity() instanceof net.minecraft.world.entity.TamableAnimal tamableAttacker) {
+            if (damageSource.getEntity() instanceof TamableAnimal tamableAttacker) {
                 LivingEntity owner = tamableAttacker.getOwner();
                 if (owner instanceof Player player) {
                     CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
@@ -179,6 +184,62 @@ public class EventHandler {
             float healthPercentage = (currentHealth / maxHealth) * 100;
 
             return 1.0f + (healthPercentage / 100.0f) * (float) CommonConfig.tasselRingDamageMultiplierMax;
+        }
+
+        private static class BossKillRecord {
+            long dragonKillTime = 0;
+            long witherKillTime = 0;
+        }
+
+        private static final Map<UUID, BossKillRecord> BOSS_KILLS = new ConcurrentHashMap<>();
+
+        @SubscribeEvent
+        public static void onBossDeath(LivingDeathEvent event) {
+            if (!(event.getEntity() instanceof EnderDragon) && !(event.getEntity() instanceof WitherBoss)) {
+                return;
+            }
+
+            if (!(event.getSource().getEntity() instanceof Player player)) {
+                return;
+            }
+
+            UUID playerId = player.getUUID();
+            long now = System.currentTimeMillis();
+
+            BossKillRecord record = BOSS_KILLS.computeIfAbsent(playerId, k -> new BossKillRecord());
+
+            boolean shouldDrop = false;
+
+            if (event.getEntity() instanceof EnderDragon) {
+                record.dragonKillTime = now;
+                if (record.witherKillTime != 0 && (now - record.witherKillTime) <= 10_000) {
+                    shouldDrop = true;
+                }
+            } else if (event.getEntity() instanceof WitherBoss) {
+                record.witherKillTime = now;
+                if (record.dragonKillTime != 0 && (now - record.dragonKillTime) <= 10_000) {
+                    shouldDrop = true;
+                }
+            }
+
+            if (shouldDrop) {
+                LivingEntity boss = event.getEntity();
+                ItemEntity itemEntity = new ItemEntity(
+                        boss.level(),
+                        boss.getX(), boss.getY(), boss.getZ(),
+                        new ItemStack(DRItems.NIGHTMARE_BOOK.get())
+                );
+                boss.level().addFreshEntity(itemEntity);
+                record.dragonKillTime = 0;
+                record.witherKillTime = 0;
+            }
+
+            if (record.dragonKillTime != 0 && (now - record.dragonKillTime) > 15_000) {
+                record.dragonKillTime = 0;
+            }
+            if (record.witherKillTime != 0 && (now - record.witherKillTime) > 15_000) {
+                record.witherKillTime = 0;
+            }
         }
 
         @SubscribeEvent
@@ -388,6 +449,10 @@ public class EventHandler {
                     }
                 });
             }
+
+            if (!player.level().isClientSide && player.tickCount % 20 == 0) {
+                PastRingItem.repairPlayerItems(player);
+            }
         }
 
         @SubscribeEvent
@@ -409,12 +474,13 @@ public class EventHandler {
         }
 
         @SubscribeEvent
-        public static void onLivingBreathe(EntityTickEvent.Pre event) {
-            if (event.getEntity() instanceof Player player) {
+        public static void onLivingBreathe(LivingBreatheEvent event) {
+            LivingEntity entity = event.getEntity();
+            if (entity instanceof Player player) {
                 CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
                     if (iCuriosItemHandler.isEquipped(DRItems.OCEAN_CURRENT_BLESSING.get())) {
                         if (player.isEyeInFluid(FluidTags.WATER)) {
-                            player.setAirSupply(player.getMaxAirSupply());
+                            event.setCanBreathe(true);
                         }
                     }
                 });

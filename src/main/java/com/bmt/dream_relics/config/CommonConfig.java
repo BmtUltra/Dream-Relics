@@ -121,7 +121,7 @@ public class CommonConfig {
 
     public static final ModConfigSpec.DoubleValue DARK_WHISPER_DAGGER_DAMAGE_MULTIPLIER = BUILDER
             .comment("Damage multiplier for muted targets (0.0 - 1.0)")
-            .defineInRange("darkWhisperDaggerDamageMultiplier", 0.5, 0.0, 1.0);
+            .defineInRange("darkWhisperDaggerDamageMultiplier", 0.1, 0.0, 1.0);
 
     public static final ModConfigSpec.IntValue OBSERVE_SELF_EYE_RANGE = BUILDER
             .comment("Range in blocks for Observe Self Eye glow effect")

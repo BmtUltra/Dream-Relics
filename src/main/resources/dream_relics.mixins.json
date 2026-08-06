@@ -5,10 +5,10 @@
   "mixins": [
     "curios.CurioInventoryWrapperMixin",
     "minecraft.BlockMixin",
-    "minecraft.PlayerMixin",
     "minecraft.InventoryMixin",
     "minecraft.ItemStackMixin",
     "minecraft.LivingEntityMixin",
+    "minecraft.PlayerMixin",
     "minecraft.ServerPlayerGameModeMixin",
     "minecraft.SleepStatusMixin"
   ],

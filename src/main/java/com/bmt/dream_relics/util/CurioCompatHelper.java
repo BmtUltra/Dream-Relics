@@ -5,7 +5,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
@@ -15,11 +14,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public final class CurioCompatHelper {
-
     private static final int MAX_RECURSION_DEPTH = 8;
-
-    private CurioCompatHelper() {
-    }
 
     public static Optional<SlotResult> findFirstStoredCurio(LivingEntity wearer, Map<String, ICurioStacksHandler> curios, Predicate<ItemStack> filter) {
         for (Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet()) {
@@ -39,9 +34,7 @@ public final class CurioCompatHelper {
         return Optional.empty();
     }
 
-    public static List<SlotResult> findStoredCurios(LivingEntity wearer,
-                                                    Map<String, ICurioStacksHandler> curios,
-                                                    Predicate<ItemStack> filter) {
+    public static List<SlotResult> findStoredCurios(LivingEntity wearer, Map<String, ICurioStacksHandler> curios, Predicate<ItemStack> filter) {
         List<SlotResult> results = new ArrayList<>();
 
         for (Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet()) {
@@ -65,11 +58,8 @@ public final class CurioCompatHelper {
         return results;
     }
 
-    public static List<SlotResult> findStoredCuriosByIdentifiers(LivingEntity wearer,
-                                                                 Map<String, ICurioStacksHandler> curios,
-                                                                 String... identifiers) {
+    public static List<SlotResult> findStoredCuriosByIdentifiers(LivingEntity wearer, Map<String, ICurioStacksHandler> curios, String... identifiers) {
         Set<String> idSet = new HashSet<>(Arrays.asList(identifiers));
-
         List<SlotResult> results = new ArrayList<>();
 
         for (Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet()) {
@@ -98,10 +88,7 @@ public final class CurioCompatHelper {
         return results;
     }
 
-    public static Optional<SlotResult> findStoredCurioBySlot(LivingEntity wearer,
-                                                             Map<String, ICurioStacksHandler> curios,
-                                                             String identifier,
-                                                             int index) {
+    public static Optional<SlotResult> findStoredCurioBySlot(LivingEntity wearer, Map<String, ICurioStacksHandler> curios, String identifier, int index) {
         ICurioStacksHandler stacksHandler = curios.get(identifier);
 
         if (stacksHandler == null) {
@@ -120,26 +107,6 @@ public final class CurioCompatHelper {
         return found.map(itemStack -> new SlotResult(createParentSlotContext(identifier, wearer, index, stacksHandler), itemStack));
     }
 
-    public static Optional<ImmutableTriple<String, Integer, ItemStack>> findFirstStoredTriple(
-            LivingEntity wearer,
-            Map<String, ICurioStacksHandler> curios,
-            Predicate<ItemStack> filter) {
-        for (Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet()) {
-            String identifier = entry.getKey();
-            IDynamicStackHandler stackHandler = entry.getValue().getStacks();
-
-            for (int i = 0; i < stackHandler.getSlots(); i++) {
-                ItemStack equipped = stackHandler.getStackInSlot(i);
-                Optional<ItemStack> found = findFirstStoredMatch(equipped, filter, 0);
-
-                if (found.isPresent()) {
-                    return Optional.of(new ImmutableTriple<>(identifier, i, found.get()));
-                }
-            }
-        }
-        return Optional.empty();
-    }
-
     public static List<ItemStack> collectVirtualEquippedStacks(Map<String, ICurioStacksHandler> curios) {
         List<ItemStack> results = new ArrayList<>();
 
@@ -153,9 +120,7 @@ public final class CurioCompatHelper {
         return results;
     }
 
-    private static Optional<ItemStack> findFirstStoredMatch(ItemStack stack,
-                                                            Predicate<ItemStack> filter,
-                                                            int depth) {
+    private static Optional<ItemStack> findFirstStoredMatch(ItemStack stack, Predicate<ItemStack> filter, int depth) {
         if (depth > MAX_RECURSION_DEPTH || stack.isEmpty()) {
             return Optional.empty();
         }
@@ -185,10 +150,7 @@ public final class CurioCompatHelper {
         return Optional.empty();
     }
 
-    private static void collectStoredMatches(ItemStack stack,
-                                             Predicate<ItemStack> filter,
-                                             List<ItemStack> results,
-                                             int depth) {
+    private static void collectStoredMatches(ItemStack stack, Predicate<ItemStack> filter, List<ItemStack> results, int depth) {
         if (depth > MAX_RECURSION_DEPTH || stack.isEmpty()) {
             return;
         }
@@ -209,14 +171,11 @@ public final class CurioCompatHelper {
             if (filter.test(stored)) {
                 results.add(stored);
             }
-
             collectStoredMatches(stored, filter, results, depth + 1);
         }
     }
 
-    private static void collectAllStoredItems(ItemStack stack,
-                                              List<ItemStack> results,
-                                              int depth) {
+    private static void collectAllStoredItems(ItemStack stack, List<ItemStack> results, int depth) {
         if (depth > MAX_RECURSION_DEPTH || stack.isEmpty()) {
             return;
         }
@@ -233,16 +192,12 @@ public final class CurioCompatHelper {
             if (stored.isEmpty()) {
                 continue;
             }
-
             results.add(stored);
             collectAllStoredItems(stored, results, depth + 1);
         }
     }
 
-    private static SlotContext createParentSlotContext(String identifier,
-                                                       LivingEntity wearer,
-                                                       int index,
-                                                       ICurioStacksHandler stacksHandler) {
+    private static SlotContext createParentSlotContext(String identifier, LivingEntity wearer, int index, ICurioStacksHandler stacksHandler) {
         NonNullList<Boolean> renderStates = stacksHandler.getRenders();
         boolean visible = renderStates.size() > index && renderStates.get(index);
         return new SlotContext(identifier, wearer, index, false, visible);

@@ -12,7 +12,6 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import java.util.function.BiFunction;
 
 public class ArtifactsCompatImpl {
-    
     public static class DreamRelicsSlotProvider implements EquipmentSlotProvider {
         
         @Override
@@ -40,7 +39,6 @@ public class ArtifactsCompatImpl {
                                 if (relic.isEmpty()) {
                                     continue;
                                 }
-
                                 init = f.apply(relic, init);
                             }
                         }

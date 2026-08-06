@@ -138,8 +138,8 @@ configurations {
 }
 
 dependencies {
-    runtimeOnly "maven.modrinth:curios:9.5.1+1.21.1"
-    compileOnly "maven.modrinth:curios:9.5.1+1.21.1"
+    implementation "maven.modrinth:curios:9.5.1+1.21.1"
+    implementation "maven.modrinth:jade:15.10.5+neoforge"
     implementation fileTree("libs")
 }
 

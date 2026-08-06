@@ -72,5 +72,8 @@
   "tooltip.dream_relics.echo_earring": "§7攻击后有概率触发回响",
   "tooltip.dream_relics.memory_necklace": "§7受到伤害后获得忆质",
   "tooltip.dream_relics.memory_necklace.stored_damage": "§b忆质: %s",
-  "tooltip.dream_relics.past_ring": "§7消耗经验值修复物品"
+  "tooltip.dream_relics.past_ring": "§7消耗经验值修复护甲",
+
+  "jade.dream_relics.mute_state_name": "失语",
+  "jade.dream_relics.sleep_state_name": "沉睡"
 }

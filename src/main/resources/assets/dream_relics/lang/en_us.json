@@ -73,5 +73,8 @@
   "tooltip.dream_relics.echo_earring": "§7Chance to trigger an echo after attacking",
   "tooltip.dream_relics.memory_necklace": "§7Gain memory essence after taking damage",
   "tooltip.dream_relics.memory_necklace.stored_damage": "§bMemory Essence: %s",
-  "tooltip.dream_relics.past_ring": "§7Repairs items by consuming experience"
+  "tooltip.dream_relics.past_ring": "§7Repairs items by consuming experience",
+
+  "jade.dream_relics.mute_state_name": "Mute",
+  "jade.dream_relics.sleep_state_name": "Sleep"
 }

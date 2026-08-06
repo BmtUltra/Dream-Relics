@@ -88,18 +88,6 @@ public class ConfigLootModifier extends LootModifier {
                 LootConfig.OCEAN_CURRENT_BLESSING_MIN_COUNT,
                 LootConfig.OCEAN_CURRENT_BLESSING_MAX_COUNT),
 
-        DARK_WHISPER_RING("dark_whisper_ring",
-                DRItems.DARK_WHISPER_RING,
-                LootConfig.DARK_WHISPER_RING_CHANCE,
-                LootConfig.DARK_WHISPER_RING_MIN_COUNT,
-                LootConfig.DARK_WHISPER_RING_MAX_COUNT),
-
-        VOID_NECKLACE("void_necklace",
-                DRItems.VOID_NECKLACE,
-                LootConfig.VOID_NECKLACE_CHANCE,
-                LootConfig.VOID_NECKLACE_MIN_COUNT,
-                LootConfig.VOID_NECKLACE_MAX_COUNT),
-
         MIST_VEIL_RING("mist_veil_ring",
                 DRItems.MIST_VEIL_RING,
                 LootConfig.MIST_VEIL_RING_CHANCE,
@@ -218,13 +206,7 @@ public class ConfigLootModifier extends LootModifier {
                 DRItems.RARE_GOLD_BRACELET,
                 LootConfig.RARE_GOLD_BRACELET_CHANCE,
                 LootConfig.RARE_GOLD_BRACELET_MIN_COUNT,
-                LootConfig.RARE_GOLD_BRACELET_MAX_COUNT),
-
-        NIGHTMARE_BOOK("nightmare_book",
-                DRItems.NIGHTMARE_BOOK,
-                LootConfig.NIGHTMARE_BOOK_CHANCE,
-                LootConfig.NIGHTMARE_BOOK_MIN_COUNT,
-                LootConfig.NIGHTMARE_BOOK_MAX_COUNT);
+                LootConfig.RARE_GOLD_BRACELET_MAX_COUNT);
 
         final String name;
         final Supplier<? extends Item> itemSupplier;

@@ -305,17 +305,5 @@ public class LootConfig {
             .comment("Spawn count for Rare Gold Bracelet")
             .defineInRange("rareGoldBraceletMaxCount", 1, 1, 64);
 
-    public static final ModConfigSpec.DoubleValue NIGHTMARE_BOOK_CHANCE = BUILDER
-            .comment("Spawn chance for Nightmare Book in stronghold library chests (0.0 - 1.0)")
-            .defineInRange("NightmareBookChance", 0.05, 0.0, 1.0);
-
-    public static final ModConfigSpec.IntValue NIGHTMARE_BOOK_MIN_COUNT = BUILDER
-            .comment("Spawn count for Nightmare Book")
-            .defineInRange("NightmareBookMinCount", 1, 1, 64);
-
-    public static final ModConfigSpec.IntValue NIGHTMARE_BOOK_MAX_COUNT = BUILDER
-            .comment("Spawn count for Nightmare Book")
-            .defineInRange("NightmareBookMaxCount", 1, 1, 64);
-
     public static final ModConfigSpec SPEC = BUILDER.build();
 }

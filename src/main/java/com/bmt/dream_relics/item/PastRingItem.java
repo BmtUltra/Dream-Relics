@@ -25,26 +25,6 @@ public class PastRingItem extends DreamRelicItem {
             return;
         }
 
-        // 修复主手物品
-        ItemStack mainHand = player.getMainHandItem();
-        if (repairItemIfNeeded(player, mainHand)) {
-            return;
-        }
-
-        // 修复副手物品
-        ItemStack offHand = player.getOffhandItem();
-        if (repairItemIfNeeded(player, offHand)) {
-            return;
-        }
-
-        // 修复背包物品
-        for (ItemStack stack : player.getInventory().items) {
-            if (repairItemIfNeeded(player, stack)) {
-                return;
-            }
-        }
-
-        // 修复盔甲
         for (ItemStack stack : player.getInventory().armor) {
             if (repairItemIfNeeded(player, stack)) {
                 return;
@@ -57,7 +37,7 @@ public class PastRingItem extends DreamRelicItem {
             return false;
         }
 
-        int repairCost = CommonConfig.pastRingXpCostPerDurability;
+        int repairCost = CommonConfig.pastRingXpCostPerDurability * 2;
         if (repairCost <= 0) {
             return false;
         }
@@ -67,7 +47,6 @@ public class PastRingItem extends DreamRelicItem {
             player.giveExperiencePoints(-repairCost);
             return true;
         }
-
         return false;
     }
 

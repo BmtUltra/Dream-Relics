@@ -17,7 +17,7 @@ public class DRItems {
             DeferredRegister.createItems(DreamRelics.MODID);
     public static final Tier DARK_WHISPER_TIER = new SimpleTier(
             BlockTags.NEEDS_IRON_TOOL,
-            0,
+            2000,
             6.0F,
             2.0F,
             30,

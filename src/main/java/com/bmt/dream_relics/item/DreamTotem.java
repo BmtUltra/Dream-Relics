@@ -63,7 +63,7 @@ public class DreamTotem extends DreamRelicItemBase implements ICurioItem {
         player.removeAllEffects();
         player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
         player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 800, 0));
-        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 1));
+        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 2));
 
         BlockPos pos = player.blockPosition();
         AABB area = new AABB(
@@ -80,7 +80,7 @@ public class DreamTotem extends DreamRelicItemBase implements ICurioItem {
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
 
-        level.broadcastEntityEvent(player, (byte)35);
+        level.broadcastEntityEvent(player, (byte)66);
         return true;
     }
 
