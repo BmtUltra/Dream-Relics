@@ -55,6 +55,10 @@ public class CommonConfig {
             .comment("Damage boost multiplier for pet attacks when Royal Crown is equipped")
             .defineInRange("royalCrownPetDamageBoost", 1.2, 0.0, 10.0);
 
+    public static final ModConfigSpec.DoubleValue ROYAL_CROWN_PET_SIZE_SCALE = BUILDER
+            .comment("Size scale multiplier for pets when Royal Crown is equipped (1.5 = 50% bigger)")
+            .defineInRange("royalCrownPetSizeScale", 1.5, 1.0, 3.0);
+
     public static final ModConfigSpec.DoubleValue RARE_GOLD_BRACELET_DOUBLE_DROP_CHANCE = BUILDER
             .comment("Chance to double ore drops for Rare Gold Bracelet (0.0 - 1.0)")
             .defineInRange("rareGoldBraceletDoubleDropChance", 0.30, 0.0, 1.0);
@@ -74,10 +78,6 @@ public class CommonConfig {
     public static final ModConfigSpec.DoubleValue PURE_HOLY_GRAIL_XP_MULTIPLIER = BUILDER
             .comment("Experience multiplier for Pure Holy Grail")
             .defineInRange("pureHolyGrailXpMultiplier", 1.5, 0.0, 10.0);
-
-    public static final ModConfigSpec.DoubleValue ROYAL_LENS_CRIT_DAMAGE_MULTIPLIER = BUILDER
-            .comment("Critical hit damage multiplier for Royal Lens (default 2.0 = 2x damage)")
-            .defineInRange("royalLensCritDamageMultiplier", 2.0, 1.0, 10.0);
 
     public static final ModConfigSpec.DoubleValue MEMORY_NECKLACE_MAX_STORED_DAMAGE = BUILDER
             .comment("Maximum stored damage for Memory Necklace")
@@ -141,6 +141,7 @@ public class CommonConfig {
     public static double tasselRingDamageMultiplierMax;
     public static double royalCrownPetDamageReduction;
     public static double royalCrownPetDamageBoost;
+    public static double royalCrownPetSizeScale;
     public static double rareGoldBraceletDoubleDropChance;
     public static int dreamTotemEffectRange;
     public static int dreamTotemSleepDuration;
@@ -174,12 +175,12 @@ public class CommonConfig {
         tasselRingDamageMultiplierMax = TASSEL_RING_DAMAGE_MULTIPLIER_MAX.get();
         royalCrownPetDamageReduction = ROYAL_CROWN_PET_DAMAGE_REDUCTION.get();
         royalCrownPetDamageBoost = ROYAL_CROWN_PET_DAMAGE_BOOST.get();
+        royalCrownPetSizeScale = ROYAL_CROWN_PET_SIZE_SCALE.get();
         rareGoldBraceletDoubleDropChance = RARE_GOLD_BRACELET_DOUBLE_DROP_CHANCE.get();
         dreamTotemEffectRange = DREAM_TOTEM_EFFECT_RANGE.get();
         dreamTotemSleepDuration = DREAM_TOTEM_SLEEP_DURATION.get();
         dreamTotemCooldown = DREAM_TOTEM_COOLDOWN.get();
         pureHolyGrailXpMultiplier = PURE_HOLY_GRAIL_XP_MULTIPLIER.get();
-        royalLensCritDamageMultiplier = ROYAL_LENS_CRIT_DAMAGE_MULTIPLIER.get();
         memoryNecklaceMaxStoredDamage = MEMORY_NECKLACE_MAX_STORED_DAMAGE.get();
         pastRingRepairInterval = PAST_RING_REPAIR_INTERVAL.get();
         pastRingXpCostPerDurability = PAST_RING_XP_COST_PER_DURABILITY.get();

@@ -2,6 +2,7 @@ package com.bmt.dream_relics.mixins.minecraft;
 
 import com.bmt.dream_relics.client.event.GlowEffectHandler;
 import com.bmt.dream_relics.init.DRItems;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -99,8 +100,7 @@ public abstract class LivingEntityMixin {
     }
 
     @Inject(method = "getDamageAfterArmorAbsorb", at = @At("HEAD"), cancellable = true)
-    private void dreamRelics$onGetDamageAfterArmorAbsorb(net.minecraft.world.damagesource.DamageSource damageSource, float damage,
-                                                         CallbackInfoReturnable<Float> cir) {
+    private void dreamRelics$onGetDamageAfterArmorAbsorb(DamageSource damageSource, float damage, CallbackInfoReturnable<Float> cir) {
         LivingEntity target = (LivingEntity) (Object) this;
 
         if (damageSource.getEntity() instanceof LivingEntity attacker) {

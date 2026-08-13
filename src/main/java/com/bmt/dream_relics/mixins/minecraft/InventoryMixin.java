@@ -19,6 +19,7 @@ import top.theillusivec4.curios.api.CuriosApi;
 
 @Mixin(Inventory.class)
 public class InventoryMixin {
+
     @Shadow
     @Final
     public NonNullList<ItemStack> items;

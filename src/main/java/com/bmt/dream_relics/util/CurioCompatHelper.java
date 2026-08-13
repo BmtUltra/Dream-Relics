@@ -15,8 +15,48 @@ import java.util.function.Predicate;
 
 public final class CurioCompatHelper {
     private static final int MAX_RECURSION_DEPTH = 8;
+    private static final Map<UUID, CacheEntry> CACHE = new HashMap<>();
+    private static final int CACHE_TTL = 20;
+
+    private static class CacheEntry {
+        final long timestamp;
+        final Map<String, Optional<SlotResult>> firstMatchCache;
+        final Map<String, List<SlotResult>> allMatchesCache;
+
+        CacheEntry(long timestamp) {
+            this.timestamp = timestamp;
+            this.firstMatchCache = new HashMap<>();
+            this.allMatchesCache = new HashMap<>();
+        }
+    }
+
+    private static void cleanupCache(LivingEntity wearer) {
+        long currentTick = wearer.tickCount;
+        CACHE.entrySet().removeIf(entry ->
+                currentTick - entry.getValue().timestamp > CACHE_TTL
+        );
+    }
+
+    private static CacheEntry getCacheEntry(LivingEntity wearer) {
+        cleanupCache(wearer);
+        return CACHE.computeIfAbsent(wearer.getUUID(),
+                uuid -> new CacheEntry(wearer.tickCount));
+    }
 
     public static Optional<SlotResult> findFirstStoredCurio(LivingEntity wearer, Map<String, ICurioStacksHandler> curios, Predicate<ItemStack> filter) {
+        String cacheKey = "first:" + filter.hashCode();
+        CacheEntry cacheEntry = getCacheEntry(wearer);
+
+        if (cacheEntry.firstMatchCache.containsKey(cacheKey)) {
+            return cacheEntry.firstMatchCache.get(cacheKey);
+        }
+
+        Optional<SlotResult> result = findFirstStoredCurioInternal(wearer, curios, filter);
+        cacheEntry.firstMatchCache.put(cacheKey, result);
+        return result;
+    }
+
+    private static Optional<SlotResult> findFirstStoredCurioInternal(LivingEntity wearer, Map<String, ICurioStacksHandler> curios, Predicate<ItemStack> filter) {
         for (Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet()) {
             String identifier = entry.getKey();
             ICurioStacksHandler stacksHandler = entry.getValue();
@@ -24,6 +64,8 @@ public final class CurioCompatHelper {
 
             for (int i = 0; i < stackHandler.getSlots(); i++) {
                 ItemStack equipped = stackHandler.getStackInSlot(i);
+                if (equipped.isEmpty()) continue;
+
                 Optional<ItemStack> found = findFirstStoredMatch(equipped, filter, 0);
 
                 if (found.isPresent()) {
@@ -35,6 +77,19 @@ public final class CurioCompatHelper {
     }
 
     public static List<SlotResult> findStoredCurios(LivingEntity wearer, Map<String, ICurioStacksHandler> curios, Predicate<ItemStack> filter) {
+        String cacheKey = "all:" + filter.hashCode();
+        CacheEntry cacheEntry = getCacheEntry(wearer);
+
+        if (cacheEntry.allMatchesCache.containsKey(cacheKey)) {
+            return cacheEntry.allMatchesCache.get(cacheKey);
+        }
+
+        List<SlotResult> results = findStoredCuriosInternal(wearer, curios, filter);
+        cacheEntry.allMatchesCache.put(cacheKey, results);
+        return results;
+    }
+
+    private static List<SlotResult> findStoredCuriosInternal(LivingEntity wearer, Map<String, ICurioStacksHandler> curios, Predicate<ItemStack> filter) {
         List<SlotResult> results = new ArrayList<>();
 
         for (Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet()) {
@@ -44,6 +99,8 @@ public final class CurioCompatHelper {
 
             for (int i = 0; i < stackHandler.getSlots(); i++) {
                 ItemStack equipped = stackHandler.getStackInSlot(i);
+                if (equipped.isEmpty()) continue;
+
                 List<ItemStack> matches = new ArrayList<>();
                 collectStoredMatches(equipped, filter, matches, 0);
 
@@ -74,6 +131,8 @@ public final class CurioCompatHelper {
 
             for (int i = 0; i < stackHandler.getSlots(); i++) {
                 ItemStack equipped = stackHandler.getStackInSlot(i);
+                if (equipped.isEmpty()) continue;
+
                 List<ItemStack> matches = new ArrayList<>();
                 collectAllStoredItems(equipped, matches, 0);
 
@@ -102,6 +161,8 @@ public final class CurioCompatHelper {
         }
 
         ItemStack equipped = stackHandler.getStackInSlot(index);
+        if (equipped.isEmpty()) return Optional.empty();
+
         Optional<ItemStack> found = findFirstStoredMatch(equipped, stack -> true, 0);
 
         return found.map(itemStack -> new SlotResult(createParentSlotContext(identifier, wearer, index, stacksHandler), itemStack));
@@ -114,7 +175,10 @@ public final class CurioCompatHelper {
             IDynamicStackHandler stackHandler = stacksHandler.getStacks();
 
             for (int i = 0; i < stackHandler.getSlots(); i++) {
-                collectAllStoredItems(stackHandler.getStackInSlot(i), results, 0);
+                ItemStack stack = stackHandler.getStackInSlot(i);
+                if (!stack.isEmpty()) {
+                    collectAllStoredItems(stack, results, 0);
+                }
             }
         }
         return results;

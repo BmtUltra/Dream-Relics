@@ -61,7 +61,6 @@ public class ItemStackMixin {
                 return;
             }
         }
-        
         YearsAmberDurabilityTracker.clear();
     }
 
@@ -81,7 +80,6 @@ public class ItemStackMixin {
                 return EquipmentSlot.MAINHAND;
             }
         }
-        
         return EquipmentSlot.MAINHAND;
     }
 }

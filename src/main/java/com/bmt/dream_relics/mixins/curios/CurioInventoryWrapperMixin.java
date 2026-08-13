@@ -44,10 +44,7 @@ public abstract class CurioInventoryWrapperMixin {
 
     @Inject(method = "findFirstCurio(Ljava/util/function/Predicate;ZLjava/lang/String;)Ljava/util/Optional;",
             at = @At("RETURN"), cancellable = true)
-    private void dreamRelics$findFirstCurio(Predicate<ItemStack> filter,
-                                            boolean includeInactive,
-                                            String cacheKey,
-                                            CallbackInfoReturnable<Optional<SlotResult>> cir) {
+    private void dreamRelics$findFirstCurio(Predicate<ItemStack> filter, boolean includeInactive, String cacheKey, CallbackInfoReturnable<Optional<SlotResult>> cir) {
         if (cir.getReturnValue().isPresent()) {
             return;
         }
@@ -63,10 +60,7 @@ public abstract class CurioInventoryWrapperMixin {
 
     @Inject(method = "findCurios(Ljava/util/function/Predicate;ZLjava/lang/String;)Ljava/util/List;",
             at = @At("RETURN"), cancellable = true)
-    private void dreamRelics$findCurios(Predicate<ItemStack> filter,
-                                        boolean includeInactive,
-                                        String cacheKey,
-                                        CallbackInfoReturnable<List<SlotResult>> cir) {
+    private void dreamRelics$findCurios(Predicate<ItemStack> filter, boolean includeInactive, String cacheKey, CallbackInfoReturnable<List<SlotResult>> cir) {
         LivingEntity wearer = this.getWearer();
         if (wearer == null) {
             return;
@@ -79,9 +73,7 @@ public abstract class CurioInventoryWrapperMixin {
 
     @Inject(method = "findCurios(Z[Ljava/lang/String;)Ljava/util/List;",
             at = @At("RETURN"), cancellable = true)
-    private void dreamRelics$findCuriosByIdentifiers(boolean includeInactive,
-                                                     String[] identifiers,
-                                                     CallbackInfoReturnable<List<SlotResult>> cir) {
+    private void dreamRelics$findCuriosByIdentifiers(boolean includeInactive, String[] identifiers, CallbackInfoReturnable<List<SlotResult>> cir) {
         LivingEntity wearer = this.getWearer();
         if (wearer == null) {
             return;
@@ -94,10 +86,7 @@ public abstract class CurioInventoryWrapperMixin {
 
     @Inject(method = "findCurio(Ljava/lang/String;IZ)Ljava/util/Optional;",
             at = @At("RETURN"), cancellable = true)
-    private void dreamRelics$findCurio(String identifier,
-                                       int index,
-                                       boolean includeInactive,
-                                       CallbackInfoReturnable<Optional<SlotResult>> cir) {
+    private void dreamRelics$findCurio(String identifier, int index, boolean includeInactive, CallbackInfoReturnable<Optional<SlotResult>> cir) {
         LivingEntity wearer = this.getWearer();
         if (wearer == null) {
             return;

@@ -53,7 +53,7 @@
   "tooltip.dream_relics.pure_holy_grail": "§7Increased experience gain",
   "tooltip.dream_relics.elven_boots": "§7Multiple mid-air jumps",
   "tooltip.dream_relics.rare_gold_bracelet": "§7Chance to drop more when mining ores",
-  "tooltip.dream_relics.royal_lens": "§7Increased damage from jump attacks",
+  "tooltip.dream_relics.royal_lens": "§7Projectile damage always critically hits, dealing 1.5x damage",
   "tooltip.dream_relics.royal_crown": "§7Tamed creatures receive enhanced abilities",
   "item.dream_relics.tooltip.item.flawless_gem.restore": "§7Repairs item durability on an anvil and removes all negative enchantments",
   "tooltip.dream_relics.dark_whisper_ring": "§7Undead creatures will not target the wearer",

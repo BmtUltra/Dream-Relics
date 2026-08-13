@@ -10,12 +10,17 @@ import com.bmt.dream_relics.util.MuteStateManager;
 import com.bmt.dream_relics.util.SleepStateManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -25,8 +30,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
@@ -276,12 +280,12 @@ public class EventHandler {
             );
 
             player.level().playSound(null, target.getX(), target.getY(), target.getZ(),
-                    net.minecraft.sounds.SoundEvents.ELDER_GUARDIAN_CURSE,
-                    net.minecraft.sounds.SoundSource.PLAYERS, 0.8f, 1.2f);
+                    SoundEvents.ELDER_GUARDIAN_CURSE,
+                    SoundSource.PLAYERS, 0.8f, 1.2f);
 
             for (LivingEntity entity : entities) {
-                net.minecraft.world.phys.HitResult hit = checkEntityIntersecting(entity, start, end, width);
-                if (hit.getType() != net.minecraft.world.phys.HitResult.Type.MISS) {
+                HitResult hit = checkEntityIntersecting(entity, start, end, width);
+                if (hit.getType() != HitResult.Type.MISS) {
                     entity.hurt(player.damageSources().sonicBoom(player), extraDamage);
                 }
             }
@@ -296,16 +300,16 @@ public class EventHandler {
             }
         }
 
-        private static net.minecraft.world.phys.HitResult checkEntityIntersecting(Entity entity, Vec3 start, Vec3 end, float width) {
+        private static HitResult checkEntityIntersecting(Entity entity, Vec3 start, Vec3 end, float width) {
             AABB entityBox = entity.getBoundingBox().inflate(width);
 
             java.util.Optional<Vec3> intersection = entityBox.clip(start, end);
 
             if (intersection.isPresent()) {
                 Vec3 hitPos = intersection.get();
-                return new net.minecraft.world.phys.EntityHitResult(entity, hitPos);
+                return new EntityHitResult(entity, hitPos);
             } else {
-                return net.minecraft.world.phys.BlockHitResult.miss(end, net.minecraft.core.Direction.UP, net.minecraft.core.BlockPos.containing(end));
+                return BlockHitResult.miss(end, net.minecraft.core.Direction.UP, net.minecraft.core.BlockPos.containing(end));
             }
         }
 
@@ -376,7 +380,7 @@ public class EventHandler {
             });
         }
 
-        private static boolean isOreBlock(net.minecraft.world.level.block.state.BlockState state) {
+        private static boolean isOreBlock(BlockState state) {
             return state.is(Tags.Blocks.ORES);
         }
 
@@ -387,6 +391,50 @@ public class EventHandler {
                 MuteStateManager.updateMuteState(entity);
                 if (!entity.level().isClientSide && entity.tickCount % 20 == 0) {
                     FlowStateManager.updateFlowStates(entity.level());
+                }
+                if (!entity.level().isClientSide && entity instanceof TamableAnimal tamable) {
+                    updateRoyalCrownPetSize(tamable);
+                }
+            }
+        }
+
+        private static final ResourceLocation ROYAL_CROWN_SIZE_ID = ResourceLocation.fromNamespaceAndPath(DreamRelics.MODID, "royal_crown_size");
+
+        private static void updateRoyalCrownPetSize(TamableAnimal tamable) {
+            if (!tamable.isTame() || tamable.getOwner() == null) return;
+
+            LivingEntity owner = tamable.getOwner();
+            if (!(owner instanceof Player player)) return;
+
+            var scaleAttribute = tamable.getAttribute(Attributes.SCALE);
+            if (scaleAttribute == null) return;
+
+            boolean hasCrown = CuriosApi.getCuriosInventory(player)
+                    .map(handler -> handler.isEquipped(DRItems.ROYAL_CROWN.get()))
+                    .orElse(false);
+
+            if (hasCrown) {
+                float targetScale = (float) CommonConfig.royalCrownPetSizeScale;
+                if (!scaleAttribute.hasModifier(ROYAL_CROWN_SIZE_ID)) {
+                    scaleAttribute.addPermanentModifier(
+                            new AttributeModifier(ROYAL_CROWN_SIZE_ID,
+                                    targetScale - 1.0f,
+                                    AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
+                    );
+                } else {
+                    var mod = scaleAttribute.getModifier(ROYAL_CROWN_SIZE_ID);
+                    if (mod != null && Math.abs(mod.amount() - (targetScale - 1.0f)) > 0.01f) {
+                        scaleAttribute.removeModifier(ROYAL_CROWN_SIZE_ID);
+                        scaleAttribute.addPermanentModifier(
+                                new AttributeModifier(ROYAL_CROWN_SIZE_ID,
+                                        targetScale - 1.0f,
+                                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
+                        );
+                    }
+                }
+            } else {
+                if (scaleAttribute.hasModifier(ROYAL_CROWN_SIZE_ID)) {
+                    scaleAttribute.removeModifier(ROYAL_CROWN_SIZE_ID);
                 }
             }
         }
@@ -461,14 +509,8 @@ public class EventHandler {
 
             CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
                 if (iCuriosItemHandler.isEquipped(DRItems.ROYAL_LENS.get())) {
-                    float currentModifier = event.getDamageMultiplier();
-
-                    if (Math.abs(currentModifier - 1.5F) < 0.01F) {
-                        event.setDamageMultiplier((float) CommonConfig.royalLensCritDamageMultiplier);
-                    } else if (currentModifier > 1.0F) {
-                        float relativeMultiplier = currentModifier / 1.5F;
-                        event.setDamageMultiplier(relativeMultiplier * (float) CommonConfig.royalLensCritDamageMultiplier);
-                    }
+                    event.setCriticalHit(true);
+                    event.setDamageMultiplier(1.5f);
                 }
             });
         }
