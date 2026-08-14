@@ -1,6 +1,7 @@
 package com.bmt.dream_relics.compat.artifacts;
 
 import artifacts.event.ArtifactHooks;
+import com.bmt.dream_relics.api.ArtifactSyncer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 

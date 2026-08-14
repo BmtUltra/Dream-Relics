@@ -1,6 +1,7 @@
 package com.bmt.dream_relics.compat.artifacts;
 
 import artifacts.equipment.EquipmentSlotProvider;
+import com.bmt.dream_relics.api.ArtifactSyncer;
 import com.bmt.dream_relics.compat.curios.CuriosCompat;
 import com.bmt.dream_relics.item.MemoryStardustItem;
 import net.minecraft.world.entity.LivingEntity;
