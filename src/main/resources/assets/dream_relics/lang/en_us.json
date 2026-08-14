@@ -32,6 +32,8 @@
   "item.dream_relics.pure_holy_grail": "Pure Holy Grail",
   "item.dream_relics.elven_boots": "Elven Boots",
   "item.dream_relics.rare_gold_bracelet": "Rare Gold Bracelet",
+  "item.dream_relics.concentrated_resin": "Concentrated Resin",
+  "item.dream_relics.ancient_dream_splendor": "Ancient Dream Splendor",
 
   "curios.identifier.feet": "Feet",
   "curios.modifiers.feet": "When on Feet:",
@@ -74,6 +76,10 @@
   "tooltip.dream_relics.memory_necklace": "§7Gain memory essence after taking damage",
   "tooltip.dream_relics.memory_necklace.stored_damage": "§bMemory Essence: %s",
   "tooltip.dream_relics.past_ring": "§7Repairs items by consuming experience",
+  "tooltip.dream_relics.concentrated_resin": "§7Combine with an item on an anvil to keep it on death",
+  "item.dream_relics.concentrated_resin.remaining": "§7Remaining uses: %s/%s",
+  "tooltip.dream_relics.ancient_dream_splendor": "§7A crafting material",
+  "tooltip.dream_relics.soulbound": "Concentrated Resin",
 
   "jade.dream_relics.mute_state_name": "Mute",
   "jade.dream_relics.sleep_state_name": "Sleep"

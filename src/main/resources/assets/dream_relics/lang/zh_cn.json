@@ -32,6 +32,8 @@
   "item.dream_relics.pure_holy_grail": "纯洁圣杯",
   "item.dream_relics.elven_boots": "精灵之靴",
   "item.dream_relics.rare_gold_bracelet": "星辰手镯",
+  "item.dream_relics.concentrated_resin": "浓缩树脂",
+  "item.dream_relics.ancient_dream_splendor": "古老梦华",
 
   "curios.identifier.feet": "足部",
   "curios.modifiers.feet": "佩戴足部时：",
@@ -73,6 +75,7 @@
   "tooltip.dream_relics.memory_necklace": "§7受到伤害后获得忆质",
   "tooltip.dream_relics.memory_necklace.stored_damage": "§b忆质: %s",
   "tooltip.dream_relics.past_ring": "§7消耗经验值修复护甲",
+  "tooltip.dream_relics.concentrated_resin": "§7在铁砧与物品结合，使物品死亡时依旧保留",
 
   "jade.dream_relics.mute_state_name": "失语",
   "jade.dream_relics.sleep_state_name": "沉睡"

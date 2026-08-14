@@ -1,6 +1,7 @@
 package com.bmt.dream_relics.init;
 
 import com.bmt.dream_relics.DreamRelics;
+import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -33,6 +34,13 @@ public class DRDataComponents {
                     () -> DataComponentType.<Float>builder()
                             .persistent(Codec.FLOAT)
                             .networkSynchronized(ByteBufCodecs.FLOAT)
+                            .build());
+
+    public static final Supplier<DataComponentType<Unit>> SOULBOUND =
+            DATA_COMPONENT_TYPES.register("soulbound",
+                    () -> DataComponentType.<Unit>builder()
+                            .persistent(Codec.unit(Unit.INSTANCE))
+                            .networkSynchronized(StreamCodec.unit(Unit.INSTANCE))
                             .build());
 
     public record MemoryStardustContainer(ItemStackHandler items) {

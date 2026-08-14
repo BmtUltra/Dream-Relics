@@ -5,8 +5,10 @@ import com.bmt.dream_relics.config.CommonConfig;
 import com.bmt.dream_relics.init.DRCapabilities;
 import com.bmt.dream_relics.init.DRItems;
 import com.bmt.dream_relics.item.*;
+import com.bmt.dream_relics.init.DRDataComponents;
 import com.bmt.dream_relics.util.FlowStateManager;
 import com.bmt.dream_relics.util.MuteStateManager;
+import com.bmt.dream_relics.util.SoulboundCapture;
 import com.bmt.dream_relics.util.SleepStateManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -25,6 +27,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
@@ -33,10 +36,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
+import net.neoforged.neoforge.event.entity.player.AnvilRepairEvent;
 import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -45,11 +50,16 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.event.CurioDropsEvent;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
+
+import java.util.Iterator;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 public class EventHandler {
     @EventBusSubscriber(modid = DreamRelics.MODID)
@@ -88,15 +98,110 @@ public class EventHandler {
             }
         }
 
-        @SubscribeEvent
+        @SubscribeEvent(priority = EventPriority.LOWEST)
         public static void onPlayerClone(PlayerEvent.Clone event) {
             if (!event.isWasDeath() || event.getEntity().level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) {
                 return;
             }
 
-            for (ItemStack item : event.getOriginal().getInventory().items) {
-                if (item.getItem() == DRItems.SOUL_MIRROR.get()) {
-                    event.getEntity().getInventory().add(item.copy());
+            Player newPlayer = event.getEntity();
+            Inventory newInventory = newPlayer.getInventory();
+            Inventory originalInventory = event.getOriginal().getInventory();
+
+            java.util.function.Predicate<ItemStack> soulMirror = stack -> stack.getItem() == DRItems.SOUL_MIRROR.get();
+            restoreBySlot(originalInventory.items, newInventory.items, newInventory, soulMirror);
+            restoreBySlot(originalInventory.armor, newInventory.armor, newInventory, soulMirror);
+            restoreBySlot(originalInventory.offhand, newInventory.offhand, newInventory, soulMirror);
+            restoreBySlot(originalInventory.items, newInventory.items, newInventory, SoulboundCapture::isSoulbound);
+            restoreBySlot(originalInventory.armor, newInventory.armor, newInventory, SoulboundCapture::isSoulbound);
+            restoreBySlot(originalInventory.offhand, newInventory.offhand, newInventory, SoulboundCapture::isSoulbound);
+
+            List<ItemStack> captured = SoulboundCapture.take(newPlayer.getUUID());
+            if (captured != null) {
+                for (ItemStack stack : captured) {
+                    if (!newInventory.add(stack)) {
+                        newPlayer.drop(stack, false);
+                    }
+                }
+            }
+
+            List<SoulboundCapture.CurioEntry> curios = SoulboundCapture.takeCurios(newPlayer.getUUID());
+            if (curios != null) {
+                CuriosApi.getCuriosInventory(newPlayer).ifPresent(handler -> {
+                    for (SoulboundCapture.CurioEntry entry : curios) {
+                        boolean restored = false;
+                        var stacksHandler = handler.getStacksHandler(entry.identifier());
+                        if (stacksHandler.isPresent()) {
+                            top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler stacks =
+                                    entry.cosmetic() ? stacksHandler.get().getCosmeticStacks() : stacksHandler.get().getStacks();
+                            if (entry.index() < stacks.getSlots() && stacks.getStackInSlot(entry.index()).isEmpty()) {
+                                if (entry.cosmetic()) {
+                                    stacks.setStackInSlot(entry.index(), entry.stack());
+                                } else {
+                                    handler.setEquippedCurio(entry.identifier(), entry.index(), entry.stack());
+                                }
+                                restored = true;
+                            }
+                        }
+                        if (!restored) {
+                            if (!newInventory.add(entry.stack())) {
+                                newPlayer.drop(entry.stack(), false);
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        private static void restoreBySlot(List<ItemStack> originalCompartment, List<ItemStack> targetCompartment, Inventory newInventory, Predicate<ItemStack> filter) {
+            for (int i = 0; i < originalCompartment.size() && i < targetCompartment.size(); i++) {
+                ItemStack stack = originalCompartment.get(i);
+                if (filter.test(stack)) {
+                    if (targetCompartment.get(i).isEmpty()) {
+                        targetCompartment.set(i, stack.copy());
+                    } else if (!newInventory.add(stack.copy())) {
+                        newInventory.player.drop(stack.copy(), false);
+                    }
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public static void onLivingDeath(LivingDeathEvent event) {
+            if (!(event.getEntity() instanceof Player player)
+                    || player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) {
+                return;
+            }
+
+            CuriosApi.getCuriosInventory(player).ifPresent(handler ->
+                    handler.getCurios().forEach((identifier, stacksHandler) -> {
+                        captureCurioCompartment(player, identifier, stacksHandler.getStacks(), false);
+                        captureCurioCompartment(player, identifier, stacksHandler.getCosmeticStacks(), true);
+                    }));
+        }
+
+        private static void captureCurioCompartment(Player player, String identifier, IDynamicStackHandler stacks, boolean cosmetic) {
+            for (int i = 0; i < stacks.getSlots(); i++) {
+                ItemStack stack = stacks.getStackInSlot(i);
+                if (SoulboundCapture.isSoulbound(stack)) {
+                    SoulboundCapture.captureCurio(player.getUUID(),
+                            new SoulboundCapture.CurioEntry(identifier, i, stack.copy(), cosmetic));
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public static void onCurioDrops(CurioDropsEvent event) {
+            if (event.getEntity().level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) {
+                return;
+            }
+
+            Iterator<ItemEntity> iterator = event.getDrops().iterator();
+            while (iterator.hasNext()) {
+                ItemEntity drop = iterator.next();
+                ItemStack stack = drop.getItem();
+                if (SoulboundCapture.isSoulbound(stack)) {
+                    iterator.remove();
                 }
             }
         }
@@ -502,6 +607,37 @@ public class EventHandler {
                         event.setCost(10);
                         event.setMaterialCost(1);
                     }
+                }
+            }
+
+            if (!leftItem.isEmpty() && !SoulboundCapture.isSoulbound(leftItem)
+                    && rightItem.getItem() == DRItems.CONCENTRATED_RESIN.get()) {
+                ItemStack result = leftItem.copy();
+                result.set(DRDataComponents.SOULBOUND.get(), com.mojang.datafixers.util.Unit.INSTANCE);
+                event.setOutput(result);
+                event.setCost(5);
+                event.setMaterialCost(1);
+            }
+        }
+
+        @SubscribeEvent
+        public static void onAnvilRepair(AnvilRepairEvent event) {
+            ItemStack right = event.getRight();
+            if (right.getItem() != DRItems.CONCENTRATED_RESIN.get()
+                    || !event.getOutput().has(DRDataComponents.SOULBOUND.get())) {
+                return;
+            }
+
+            Player player = event.getEntity();
+            if (player.level().isClientSide) {
+                return;
+            }
+
+            if (right.getDamageValue() + 1 < ConcentratedResinItem.MAX_USES) {
+                ItemStack remaining = right.copy();
+                remaining.setDamageValue(right.getDamageValue() + 1);
+                if (!player.getInventory().add(remaining)) {
+                    player.drop(remaining, false);
                 }
             }
         }

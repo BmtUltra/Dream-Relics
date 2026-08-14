@@ -51,5 +51,7 @@ public class DRCreativeTabs {
                         output.accept(DRItems.OCEAN_CURRENT_BLESSING.get());
                         output.accept(DRItems.FLAWLESS_GEM.get());
                         output.accept(DRItems.ELVEN_BOOTS.get());
+                        output.accept(DRItems.CONCENTRATED_RESIN.get());
+                        output.accept(DRItems.ANCIENT_DREAM_SPLENDOR.get());
                     }).build());
 }

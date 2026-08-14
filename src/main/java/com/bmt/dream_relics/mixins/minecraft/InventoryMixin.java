@@ -3,6 +3,7 @@ package com.bmt.dream_relics.mixins.minecraft;
 import com.bmt.dream_relics.init.DRItems;
 import com.bmt.dream_relics.item.YearsAmber;
 import com.bmt.dream_relics.mixins.minecraft.accessor.InventoryAccessor;
+import com.bmt.dream_relics.util.SoulboundCapture;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Inventory;
@@ -69,7 +70,8 @@ public class InventoryMixin {
             for (int itemIndex = 0; itemIndex < list.size(); itemIndex++) {
                 ItemStack itemstack = list.get(itemIndex);
 
-                if (!itemstack.isEmpty() && itemstack.getItem() == DRItems.SOUL_MIRROR.get()) {
+                if (!itemstack.isEmpty()
+                        && (itemstack.getItem() == DRItems.SOUL_MIRROR.get() || SoulboundCapture.isSoulbound(itemstack))) {
                     dream_relics$reservedSoulMirrors.put(new int[]{listIndex, itemIndex}, itemstack);
                     list.set(itemIndex, ItemStack.EMPTY);
                 }
@@ -80,7 +82,6 @@ public class InventoryMixin {
     @Inject(method = "dropAll", at = @At("RETURN"))
     private void dream_relics$restoreSoulMirrors(CallbackInfo ci) {
         List<List<ItemStack>> compartments = ((InventoryAccessor) this).getCompartments();
-
         dream_relics$reservedSoulMirrors.forEach((position, stack) ->
                 compartments.get(position[0]).set(position[1], stack));
         dream_relics$reservedSoulMirrors.clear();

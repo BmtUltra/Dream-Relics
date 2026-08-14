@@ -127,6 +127,10 @@ public class CommonConfig {
             .comment("Range in blocks for Observe Self Eye glow effect")
             .defineInRange("observeSelfEyeRange", 16, 1, 64);
 
+    public static final ModConfigSpec.IntValue CONCENTRATED_RESIN_ANVIL_COST = BUILDER
+            .comment("Experience level cost for binding an item with Concentrated Resin on an anvil")
+            .defineInRange("concentratedResinAnvilCost", 30, 1, 40);
+
     public static final ModConfigSpec SPEC = BUILDER.build();
 
     public static int chargeTime;
@@ -160,6 +164,7 @@ public class CommonConfig {
     public static int darkWhisperDaggerMuteDuration;
     public static double darkWhisperDaggerDamageMultiplier;
     public static int observeSelfEyeRange;
+    public static int concentratedResinAnvilCost;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
@@ -193,5 +198,6 @@ public class CommonConfig {
         darkWhisperDaggerMuteDuration = DARK_WHISPER_DAGGER_MUTE_DURATION.get();
         darkWhisperDaggerDamageMultiplier = DARK_WHISPER_DAGGER_DAMAGE_MULTIPLIER.get();
         observeSelfEyeRange = OBSERVE_SELF_EYE_RANGE.get();
+        concentratedResinAnvilCost = CONCENTRATED_RESIN_ANVIL_COST.get();
     }
 }

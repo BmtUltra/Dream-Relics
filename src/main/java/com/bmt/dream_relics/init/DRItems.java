@@ -4,7 +4,6 @@ import com.bmt.dream_relics.DreamRelics;
 import com.bmt.dream_relics.item.*;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.SimpleTier;
@@ -72,11 +71,11 @@ public class DRItems {
     public static final Supplier<Item> FLAWLESS_GEM = ITEMS.register("flawless_gem",
             () -> new FlawlessGem(new Item.Properties()));
     public static final Supplier<Item> ROYAL_LENS = ITEMS.register("royal_lens",
-            () -> new DreamRelicItem(new Item.Properties().rarity(Rarity.COMMON), "tooltip.dream_relics.royal_lens"));
+            () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.royal_lens"));
     public static final Supplier<Item> ROYAL_CROWN = ITEMS.register("royal_crown",
-            () -> new DreamRelicItem(new Item.Properties().rarity(Rarity.COMMON), "tooltip.dream_relics.royal_crown"));
+            () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.royal_crown"));
     public static final Supplier<Item> OCEAN_CURRENT_BLESSING = ITEMS.register("ocean_current_blessing",
-            () -> new DreamRelicItem(new Item.Properties().rarity(Rarity.COMMON), "tooltip.dream_relics.ocean_current_blessing"));
+            () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.ocean_current_blessing"));
     public static final Supplier<Item> ICARUS_WINGS = ITEMS.register("icarus_wings",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.icarus_wings"));
     public static final Supplier<Item> PURE_HOLY_GRAIL = ITEMS.register("pure_holy_grail",
@@ -85,4 +84,8 @@ public class DRItems {
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.elven_boots"));
     public static final Supplier<Item> RARE_GOLD_BRACELET = ITEMS.register("rare_gold_bracelet",
             () -> new DreamRelicItem(new Item.Properties(), "tooltip.dream_relics.rare_gold_bracelet"));
+    public static final Supplier<Item> CONCENTRATED_RESIN = ITEMS.register("concentrated_resin",
+            () -> new ConcentratedResinItem(new Item.Properties()));
+    public static final Supplier<Item> ANCIENT_DREAM_SPLENDOR = ITEMS.register("ancient_dream_splendor",
+            () -> new Item(new Item.Properties()));
 }
