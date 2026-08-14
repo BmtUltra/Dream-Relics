@@ -10,7 +10,8 @@
     "minecraft.LivingEntityMixin",
     "minecraft.PlayerMixin",
     "minecraft.ServerPlayerGameModeMixin",
-    "minecraft.SleepStatusMixin"
+    "minecraft.SleepStatusMixin",
+    "minecraft.accessor.InventoryAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
@@ -19,7 +20,7 @@
     "requireAnnotations": true
   },
   "client": [
-    "client.ClientPacketListenerMixin",
-    "minecraft.LocalPlayerMixin"
+    "minecraft.LocalPlayerMixin",
+    "minecraft.client.ClientPacketListenerMixin"
   ]
 }

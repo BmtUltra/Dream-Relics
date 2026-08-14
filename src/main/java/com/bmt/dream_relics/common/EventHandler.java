@@ -10,11 +10,12 @@ import com.bmt.dream_relics.util.MuteStateManager;
 import com.bmt.dream_relics.util.SleepStateManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -35,10 +37,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
-import net.neoforged.neoforge.event.entity.living.LivingBreatheEvent;
-import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
@@ -64,6 +63,40 @@ public class EventHandler {
                         .orElse(false);
                 if (hasYearsAmber && YearsAmber.findBestCorrectTool(event.getEntity(), event.getEntity().getMainHandItem(), event.getTargetBlock()) != null) {
                     event.setCanHarvest(true);
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public static void onMobEffectApplicable(MobEffectEvent.Applicable event) {
+            LivingEntity entity = event.getEntity();
+
+            if (entity instanceof Player player) {
+                boolean hasMistVeilRing = CuriosApi.getCuriosInventory(player)
+                        .map(handler -> handler.isEquipped(DRItems.MIST_VEIL_RING.get()))
+                        .orElse(false);
+
+                if (hasMistVeilRing) {
+                    MobEffectInstance effectInstance = event.getEffectInstance();
+                    if (effectInstance != null) {
+                        MobEffect effect = effectInstance.getEffect().value();
+                        if (effect.getCategory() == MobEffectCategory.HARMFUL) {
+                            event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
+                        }
+                    }
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public static void onPlayerClone(PlayerEvent.Clone event) {
+            if (!event.isWasDeath() || event.getEntity().level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) {
+                return;
+            }
+
+            for (ItemStack item : event.getOriginal().getInventory().items) {
+                if (item.getItem() == DRItems.SOUL_MIRROR.get()) {
+                    event.getEntity().getInventory().add(item.copy());
                 }
             }
         }
@@ -103,11 +136,10 @@ public class EventHandler {
                 CuriosApi.getCuriosInventory(player).ifPresent(iCuriosItemHandler -> {
                     if (iCuriosItemHandler.isEquipped(DRItems.ECHO_EARRING.get())) {
                         if (player.getRandom().nextFloat() < CommonConfig.echoEarringTriggerChance) {
-                            LivingEntity target = event.getEntity();
                             float baseDamage = event.getAmount();
                             float extraDamage = baseDamage * (float) CommonConfig.echoEarringExtraDamageMultiplier;
 
-                            triggerSonicWave(player, target, extraDamage);
+                            triggerSonicWave(player, extraDamage);
                         }
                     }
                 });
@@ -262,7 +294,7 @@ public class EventHandler {
             }
         }
 
-        private static void triggerSonicWave(Player player, LivingEntity target, float extraDamage) {
+        private static void triggerSonicWave(Player player, float extraDamage) {
             if (player.level().isClientSide) {
                 return;
             }
@@ -278,10 +310,6 @@ public class EventHandler {
                     LivingEntity.class, boundingBox,
                     entity -> entity != player && entity.isAlive()
             );
-
-            player.level().playSound(null, target.getX(), target.getY(), target.getZ(),
-                    SoundEvents.ELDER_GUARDIAN_CURSE,
-                    SoundSource.PLAYERS, 0.8f, 1.2f);
 
             for (LivingEntity entity : entities) {
                 HitResult hit = checkEntityIntersecting(entity, start, end, width);

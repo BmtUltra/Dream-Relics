@@ -25,13 +25,7 @@ public class ItemStackMixin {
 
     @Inject(method = "hurtAndBreak(ILnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Ljava/util/function/Consumer;)V", 
             at = @At("HEAD"), cancellable = true)
-    private void yearsAmberDurabilityTransfer(
-            int amount, 
-            ServerLevel level, 
-            @Nullable LivingEntity entity, 
-            Consumer<Item> breakCallback, 
-            CallbackInfo ci
-    ) {
+    private void yearsAmberDurabilityTransfer(int amount, ServerLevel level, @Nullable LivingEntity entity, Consumer<Item> breakCallback, CallbackInfo ci) {
         if (!(entity instanceof Player player)) {
             return;
         }

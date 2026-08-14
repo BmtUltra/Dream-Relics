@@ -1,4 +1,4 @@
-package com.bmt.dream_relics.mixins.client;
+package com.bmt.dream_relics.mixins.minecraft.client;
 
 import com.bmt.dream_relics.init.DRItems;
 import net.minecraft.client.Minecraft;

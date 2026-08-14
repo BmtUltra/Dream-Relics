@@ -66,7 +66,6 @@ public class ServerPlayerGameModeMixin {
                 bestTool.hurtAndBreak(1, level, player, (Item p_348383_) -> player.onEquippedItemBroken(p_348383_, EquipmentSlot.MAINHAND));
             }
         }
-        
         YearsAmberDurabilityTracker.clear();
     }
 }
