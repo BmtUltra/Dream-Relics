@@ -77,27 +77,6 @@ public class EventHandler {
             }
         }
 
-        @SubscribeEvent
-        public static void onMobEffectApplicable(MobEffectEvent.Applicable event) {
-            LivingEntity entity = event.getEntity();
-
-            if (entity instanceof Player player) {
-                boolean hasMistVeilRing = CuriosApi.getCuriosInventory(player)
-                        .map(handler -> handler.isEquipped(DRItems.MIST_VEIL_RING.get()))
-                        .orElse(false);
-
-                if (hasMistVeilRing) {
-                    MobEffectInstance effectInstance = event.getEffectInstance();
-                    if (effectInstance != null) {
-                        MobEffect effect = effectInstance.getEffect().value();
-                        if (effect.getCategory() == MobEffectCategory.HARMFUL) {
-                            event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
-                        }
-                    }
-                }
-            }
-        }
-
         @SubscribeEvent(priority = EventPriority.LOWEST)
         public static void onPlayerClone(PlayerEvent.Clone event) {
             if (!event.isWasDeath() || event.getEntity().level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) {

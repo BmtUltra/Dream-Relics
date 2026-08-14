@@ -1,7 +1,6 @@
 package com.bmt.dream_relics.util;
 
 import com.bmt.dream_relics.item.MemoryStardustItem;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -10,37 +9,57 @@ import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
+import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 
 public final class CurioCompatHelper {
     private static final int MAX_RECURSION_DEPTH = 8;
-    private static final Map<UUID, CacheEntry> CACHE = new HashMap<>();
+    private static final Map<UUID, CacheEntry> CACHE = new ConcurrentHashMap<>();
     private static final int CACHE_TTL = 20;
+    private static final long CLEANUP_INTERVAL_NS = 5_000_000_000L;
+    private static final AtomicLong LAST_CLEANUP_NS = new AtomicLong(0);
 
     private static class CacheEntry {
         final long timestamp;
         final Map<String, Optional<SlotResult>> firstMatchCache;
         final Map<String, List<SlotResult>> allMatchesCache;
+        @Nullable
+        volatile List<ItemStack> virtualStacksCache;
 
         CacheEntry(long timestamp) {
             this.timestamp = timestamp;
-            this.firstMatchCache = new HashMap<>();
-            this.allMatchesCache = new HashMap<>();
+            this.firstMatchCache = new ConcurrentHashMap<>();
+            this.allMatchesCache = new ConcurrentHashMap<>();
         }
     }
 
-    private static void cleanupCache(LivingEntity wearer) {
-        long currentTick = wearer.tickCount;
-        CACHE.entrySet().removeIf(entry ->
-                currentTick - entry.getValue().timestamp > CACHE_TTL
-        );
+    private static void cleanupCacheThrottled(long currentTick) {
+        long now = System.nanoTime();
+        long last = LAST_CLEANUP_NS.get();
+        if (now - last < CLEANUP_INTERVAL_NS) {
+            return;
+        }
+        if (LAST_CLEANUP_NS.compareAndSet(last, now)) {
+            CACHE.entrySet().removeIf(entry ->
+                    currentTick - entry.getValue().timestamp > CACHE_TTL
+            );
+        }
     }
 
     private static CacheEntry getCacheEntry(LivingEntity wearer) {
-        cleanupCache(wearer);
-        return CACHE.computeIfAbsent(wearer.getUUID(),
-                uuid -> new CacheEntry(wearer.tickCount));
+        UUID uuid = wearer.getUUID();
+        long tick = wearer.tickCount;
+        cleanupCacheThrottled(tick);
+
+        CacheEntry entry = CACHE.get(uuid);
+        if (entry == null || tick - entry.timestamp > CACHE_TTL) {
+            entry = new CacheEntry(tick);
+            CACHE.put(uuid, entry);
+        }
+        return entry;
     }
 
     public static Optional<SlotResult> findFirstStoredCurio(LivingEntity wearer, Map<String, ICurioStacksHandler> curios, Predicate<ItemStack> filter) {
@@ -168,7 +187,21 @@ public final class CurioCompatHelper {
         return found.map(itemStack -> new SlotResult(createParentSlotContext(identifier, wearer, index, stacksHandler), itemStack));
     }
 
-    public static List<ItemStack> collectVirtualEquippedStacks(Map<String, ICurioStacksHandler> curios) {
+    public static List<ItemStack> collectVirtualEquippedStacks(LivingEntity wearer, Map<String, ICurioStacksHandler> curios) {
+        if (wearer != null) {
+            CacheEntry cacheEntry = getCacheEntry(wearer);
+            List<ItemStack> cached = cacheEntry.virtualStacksCache;
+            if (cached != null) {
+                return cached;
+            }
+            List<ItemStack> computed = collectVirtualEquippedStacksInternal(curios);
+            cacheEntry.virtualStacksCache = computed;
+            return computed;
+        }
+        return collectVirtualEquippedStacksInternal(curios);
+    }
+
+    private static List<ItemStack> collectVirtualEquippedStacksInternal(Map<String, ICurioStacksHandler> curios) {
         List<ItemStack> results = new ArrayList<>();
 
         for (ICurioStacksHandler stacksHandler : curios.values()) {
@@ -262,8 +295,6 @@ public final class CurioCompatHelper {
     }
 
     private static SlotContext createParentSlotContext(String identifier, LivingEntity wearer, int index, ICurioStacksHandler stacksHandler) {
-        NonNullList<Boolean> renderStates = stacksHandler.getRenders();
-        boolean visible = renderStates.size() > index && renderStates.get(index);
-        return new SlotContext(identifier, wearer, index, false, visible);
+        return new SlotContext(identifier, wearer, index, false, false);
     }
 }

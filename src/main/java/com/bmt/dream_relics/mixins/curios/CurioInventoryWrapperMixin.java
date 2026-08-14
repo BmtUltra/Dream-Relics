@@ -16,10 +16,7 @@ import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.common.capability.CurioInventoryCapability;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 
 @Mixin(CurioInventoryCapability.class)
@@ -35,7 +32,7 @@ public abstract class CurioInventoryWrapperMixin {
     @Inject(method = "getEquippedCurios()Lnet/neoforged/neoforge/items/IItemHandlerModifiable;",
             at = @At("RETURN"), cancellable = true)
     private void dreamRelics$getEquippedCurios(CallbackInfoReturnable<IItemHandlerModifiable> cir) {
-        List<ItemStack> virtualStacks = CurioCompatHelper.collectVirtualEquippedStacks(this.getCurios());
+        List<ItemStack> virtualStacks = CurioCompatHelper.collectVirtualEquippedStacks(Objects.requireNonNull(this.getWearer()), this.getCurios());
 
         if (!virtualStacks.isEmpty()) {
             cir.setReturnValue(new CombinedEquipped(cir.getReturnValue(), virtualStacks));
